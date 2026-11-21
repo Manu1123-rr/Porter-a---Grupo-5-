@@ -238,20 +238,6 @@
   .btn-tema.girar .icono-tema { transform: rotate(360deg); }
 
   /* ---------- Pestañas ---------- */
-  .aviso-demo {
-    margin: 14px auto 0;
-    padding: 11px 15px;
-    border: 1px solid color-mix(in srgb, var(--warn) 35%, var(--border));
-    border-radius: 12px;
-    background: var(--warn-soft);
-    color: var(--text);
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: .88rem;
-  }
-  .aviso-demo strong { display: block; margin-bottom: 1px; }
-  .aviso-demo .demo-icono { font-size: 1.1rem; line-height: 1.35; }
   .barra-pestanas {
     position: sticky;
     top: 0;
@@ -924,6 +910,13 @@
   .sv-media { fill: var(--chart-line); stroke: var(--surface); }
   .sv-barra-h { fill: var(--chart-bar); }
   .sv-bigote { stroke: var(--text-2); }
+  .sv-hist-bar { fill: var(--highlight); opacity: .85; }
+  .sv-poly { fill: none; stroke: #F59E0B; stroke-width: 2.5; stroke-linejoin: round; }
+  .sv-punto-poly { fill: #F59E0B; }
+  .sv-caja-box { fill: var(--surface-3); stroke: var(--highlight); stroke-width: 2; }
+  .sv-caja-mediana { stroke: #F59E0B; stroke-width: 3; }
+  .sv-media-punto { fill: #DC2626; }
+  .sv-media-txt { fill: #DC2626; font-weight: 600; }
 
   /* ---------- Probabilidad ---------- */
   .prob-grid { margin-top: 12px; }
@@ -1320,6 +1313,9 @@
         <div class="herramientas">
           <div class="total">Total: <strong id="total">…</strong></div>
           <button type="button" class="btn-actualizar" id="btn-actualizar"><span class="flecha" aria-hidden="true">↻</span> Actualizar</button>
+          <button type="button" class="btn-actualizar" id="btn-exportar">⬇ Exportar CSV</button>
+          <label class="btn-actualizar" for="archivo-csv" style="cursor:pointer">⬆ Importar CSV</label>
+          <input type="file" id="archivo-csv" accept=".csv,text/csv" hidden>
           <a class="enlace-hoja" id="enlace-hoja" href="#" target="_blank" rel="noopener" hidden>Abrir hoja de cálculo ↗</a>
         </div>
       </div>
@@ -1367,7 +1363,7 @@
         <h2>Análisis estadístico de los registros</h2>
         <button type="button" class="btn-actualizar" id="btn-analisis-actualizar">↻ Actualizar análisis</button>
       </div>
-      <p class="nota">Los cálculos se realizan con los registros cargados desde Google Sheets. El filtro cualitativo es opcional y se aplica antes de calcular las tablas.</p>
+      <p class="nota">Los cálculos se realizan con los registros guardados en este navegador. El filtro cualitativo es opcional y se aplica antes de calcular las tablas.</p>
       <div class="rejilla dos analisis-controles">
         <div class="campo">
           <label for="analisis-variable">Variable que desea analizar</label>
@@ -1376,6 +1372,7 @@
             <option value="medio">Medio de ingreso · Cualitativa</option>
             <option value="carne">Presenta carné · Cualitativa</option>
             <option value="franja">Franja horaria · Cualitativa</option>
+            <option value="hora">Hora de ingreso · Cuantitativa</option>
           </select>
         </div>
         <div class="campo">
@@ -1422,7 +1419,7 @@
     <div class="tarjeta" id="analisis-graficos">
       <h2>Representaciones gráficas</h2>
       <div id="analisis-graficos-cualitativos">
-        <h3>Frecuencia por categoría</h3>
+        <h3 id="analisis-titulo-graficos">Frecuencia por categoría</h3>
         <div class="analisis-grafico" id="analisis-barras"></div>
       </div>
     </div>
@@ -1436,7 +1433,7 @@
   <section class="panel" id="panel-probabilidad" role="tabpanel" aria-labelledby="tab-probabilidad" hidden>
     <div class="tarjeta">
       <h2>Probabilidad de eventos</h2>
-      <p class="nota">Seleccione el evento A y, si lo desea, el evento B. Los cálculos utilizan los registros cargados desde Google Sheets.</p>
+      <p class="nota">Seleccione el evento A y, si lo desea, el evento B. Los cálculos utilizan los registros guardados en este navegador.</p>
       <div class="rejilla dos prob-grid">
         <div class="campo">
           <label for="prob-a-variable">Variable del evento A</label>
@@ -1552,7 +1549,7 @@
 
 </main>
 
-<footer class="pie">Uni Control · Proyecto de Estadística · UNIPAZ · Datos sincronizados con Google Sheets</footer>
+<footer class="pie">Uni Control · Proyecto de Estadística · UNIPAZ · Datos guardados en este navegador</footer>
 
 <!-- Ventana de confirmación -->
 <div class="modal-fondo" id="modal" hidden>
@@ -1600,6 +1597,7 @@
   var LIMITE_PASO = 15;
   var INTERVALO_SYNC = 45000;
   var CLAVE_TEMA = 'uniControl_tema';
+  var CLAVE_DATOS = 'uniControl_registros_v1';
 
   var REDUCIR = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
@@ -1628,6 +1626,8 @@
   var btnLimpiar = $('btn-limpiar');
   var btnAhora = $('btn-ahora');
   var btnActualizar = $('btn-actualizar');
+  var btnExportar = $('btn-exportar');
+  var archivoCsv = $('archivo-csv');
   var btnMas = $('btn-mas');
   var enlaceHoja = $('enlace-hoja');
   var enVivoEl = $('en-vivo');
@@ -1731,9 +1731,42 @@
     return p[2] + '/' + p[1] + '/' + p[0];
   }
 
+  /*
+   * Convierte cualquier formato de hora a «HH:MM».
+   * Acepta: "7:30", "07:30:00", "2:30 p. m.", "2:30pm", "14:30",
+   * objetos Date y fracciones de día. Devuelve '' si no es válida.
+   */
+  function normalizarHora(valor) {
+    if (valor === null || valor === undefined || valor === '') { return ''; }
+
+    var h, m;
+
+    if (valor instanceof Date) {
+      if (isNaN(valor.getTime())) { return ''; }
+      h = valor.getHours();
+      m = valor.getMinutes();
+    } else if (typeof valor === 'number') {
+      if (!isFinite(valor) || valor < 0 || valor >= 1) { return ''; }
+      var minutosTotales = Math.round(valor * 1440);
+      h = Math.floor(minutosTotales / 60) % 24;
+      m = minutosTotales % 60;
+    } else {
+      var s = String(valor).toLowerCase().replace(/\./g, '').replace(/\s+/g, '');
+      var coincide = /^(\d{1,2}):(\d{2})(?::\d{2})?(am|pm)?$/.exec(s);
+      if (!coincide) { return ''; }
+      h = Number(coincide[1]);
+      m = Number(coincide[2]);
+      if (coincide[3] === 'pm' && h < 12) { h += 12; }
+      if (coincide[3] === 'am' && h === 12) { h = 0; }
+    }
+
+    if (h < 0 || h > 23 || m < 0 || m > 59) { return ''; }
+    return pad(h) + ':' + pad(m);
+  }
+
   function horaDe(hora) {
-    var m = /^(\d{2}):\d{2}$/.exec(String(hora));
-    return m ? m[1] : '';
+    var normal = normalizarHora(hora);
+    return normal ? normal.slice(0, 2) : '';
   }
 
   function franjaHoraria(hora) {
@@ -1791,25 +1824,273 @@
     }, 4200);
   }
 
-  /* ================== Comunicación con Apps Script ================== */
-  function llamarServidor(nombre, argumentos) {
-    return new Promise(function (resolve, reject) {
-      if (typeof google === 'undefined' || !google.script || !google.script.run) {
-        reject(new Error('Esta página debe abrirse desde la URL de la implementación de Apps Script.'));
-        return;
-      }
-      var ejecutor = google.script.run
-        .withSuccessHandler(resolve)
-        .withFailureHandler(function (err) { reject(err); });
-      ejecutor[nombre].apply(ejecutor, argumentos || []);
-    });
-  }
-
   function mensajeError(err) {
     var texto = (err && err.message) ? String(err.message) : 'Ocurrió un error inesperado.';
     return texto.replace(/^(Error|Exception):\s*/i, '');
   }
 
+  /* ================== Almacenamiento en este navegador ================== */
+  function leerLocal() {
+    try {
+      var raw = localStorage.getItem(CLAVE_DATOS);
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function guardarLocal(arr) {
+    try {
+      localStorage.setItem(CLAVE_DATOS, JSON.stringify(arr));
+    } catch (e) {
+      throw new Error('No fue posible guardar en este navegador. Verifique que no esté en modo privado.');
+    }
+  }
+
+  function listaRegistros() {
+    return leerLocal().map(function (r) {
+      return {
+        id: String(r.id),
+        fecha: String(r.fecha),
+        hora: normalizarHora(r.hora) || String(r.hora),
+        tipo: String(r.tipo),
+        medio: String(r.medio),
+        carne: String(r.carne)
+      };
+    });
+  }
+
+  function generarId() {
+    return 'R' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+
+  function validarDatos(d) {
+    if (!d || !/^\d{4}-\d{2}-\d{2}$/.test(String(d.fecha || ''))) { throw new Error('La fecha no es válida.'); }
+    var hora = normalizarHora(d.hora);
+    if (!hora) { throw new Error('La hora no es válida.'); }
+    if (OPCIONES.tipo.indexOf(d.tipo) === -1) { throw new Error('Tipo de persona no válido.'); }
+    if (OPCIONES.medio.indexOf(d.medio) === -1) { throw new Error('Medio de ingreso no válido.'); }
+    if (OPCIONES.carne.indexOf(d.carne) === -1) { throw new Error('Valor de «Presenta carné» no válido.'); }
+    return { fecha: d.fecha, hora: hora, tipo: d.tipo, medio: d.medio, carne: d.carne };
+  }
+
+  /* ================== Acciones de datos (sin servidor) ================== */
+  var ACCIONES = {
+    obtenerDatosIniciales: function () {
+      return { registros: listaRegistros(), esDemostracion: false, urlHoja: null };
+    },
+
+    guardarRegistro: function (d) {
+      var nuevo = validarDatos(d);
+      var lista = leerLocal();
+      var item = {
+        id: generarId(),
+        fecha: nuevo.fecha,
+        hora: nuevo.hora,
+        tipo: nuevo.tipo,
+        medio: nuevo.medio,
+        carne: nuevo.carne,
+        registrado_el: new Date().toISOString()
+      };
+      lista.push(item);
+      guardarLocal(lista);
+      return {
+        registros: listaRegistros(),
+        numero: lista.length,
+        esDemostracion: false
+      };
+    },
+
+    eliminarRegistro: function (id) {
+      var lista = leerLocal();
+      var nueva = lista.filter(function (r) { return String(r.id) !== String(id); });
+      if (nueva.length === lista.length) {
+        throw new Error('No se encontró el registro. Actualice la página e inténtelo de nuevo.');
+      }
+      guardarLocal(nueva);
+      return { registros: listaRegistros(), esDemostracion: false };
+    }
+  };
+
+  function llamarServidor(nombre, argumentos) {
+    return new Promise(function (resolve, reject) {
+      try {
+        var fn = ACCIONES[nombre];
+        if (!fn) { throw new Error('Acción no disponible: ' + nombre); }
+        resolve(fn.apply(null, argumentos || []));
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
+  /* ================== Importar y exportar CSV ================== */
+  function separarLinea(linea, sep) {
+    var out = [], cur = '', q = false;
+    for (var i = 0; i < linea.length; i++) {
+      var c = linea.charAt(i);
+      if (c === '"') {
+        if (q && linea.charAt(i + 1) === '"') { cur += '"'; i++; }
+        else { q = !q; }
+      } else if (c === sep && !q) {
+        out.push(cur.trim());
+        cur = '';
+      } else {
+        cur += c;
+      }
+    }
+    out.push(cur.trim());
+    return out;
+  }
+
+  function fechaDesdeCsv(valor) {
+    var s = String(valor || '').trim();
+    var m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s);
+    if (m) { return m[3] + '-' + pad(Number(m[2])) + '-' + pad(Number(m[1])); }
+    var iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
+    if (iso) { return iso[1] + '-' + iso[2] + '-' + iso[3]; }
+    return '';
+  }
+
+  function valorCanonico(lista, valor) {
+    var buscado = normalizar(String(valor || '').trim());
+    for (var i = 0; i < lista.length; i++) {
+      if (normalizar(lista[i]) === buscado) { return lista[i]; }
+    }
+    return '';
+  }
+
+  function carneCanonico(valor) {
+    var s = normalizar(String(valor || '').trim());
+    if (s === 'si' || s === 's') { return 'Sí'; }
+    if (s === 'no' || s === 'n') { return 'No'; }
+    return '';
+  }
+
+  function importarCSV(texto) {
+    var lineas = String(texto).replace(/^\uFEFF/, '').split(/\r?\n/).filter(function (l) {
+      return l.trim() !== '';
+    });
+    if (lineas.length < 2) { throw new Error('El archivo no tiene registros.'); }
+
+    var sep = (lineas[0].split(';').length > lineas[0].split(',').length) ? ';' : ',';
+    var enc = separarLinea(lineas[0], sep).map(function (h) {
+      return normalizar(h).replace(/\s+/g, ' ').trim();
+    });
+
+    function col(nombres) {
+      for (var i = 0; i < nombres.length; i++) {
+        var k = enc.indexOf(nombres[i]);
+        if (k !== -1) { return k; }
+      }
+      return -1;
+    }
+
+    var iFecha = col(['fecha']);
+    var iHora = col(['hora']);
+    var iTipo = col(['tipo de persona', 'tipo']);
+    var iMedio = col(['medio de ingreso', 'medio']);
+    var iCarne = col(['presenta carne', 'carne']);
+
+    if (iFecha < 0 || iHora < 0 || iTipo < 0 || iMedio < 0 || iCarne < 0) {
+      throw new Error('El archivo debe tener las columnas Fecha, Hora, Tipo de persona, Medio de ingreso y Presenta carné.');
+    }
+
+    var actuales = listaRegistros();
+    var claves = {};
+    actuales.forEach(function (r) {
+      claves[r.fecha + '|' + r.hora + '|' + r.tipo + '|' + r.medio + '|' + r.carne] = true;
+    });
+
+    var lista = leerLocal();
+    var agregados = 0, omitidos = 0, duplicados = 0;
+
+    for (var n = 1; n < lineas.length; n++) {
+      var c = separarLinea(lineas[n], sep);
+      var fecha = fechaDesdeCsv(c[iFecha]);
+      var hora = normalizarHora(c[iHora]);
+      var tipo = valorCanonico(OPCIONES.tipo, c[iTipo]);
+      var medio = valorCanonico(OPCIONES.medio, c[iMedio]);
+      var carne = carneCanonico(c[iCarne]);
+
+      if (!fecha || !hora || !tipo || !medio || !carne) { omitidos++; continue; }
+
+      var clave = fecha + '|' + hora + '|' + tipo + '|' + medio + '|' + carne;
+      if (claves[clave]) { duplicados++; continue; }
+      claves[clave] = true;
+
+      lista.push({
+        id: generarId(),
+        fecha: fecha,
+        hora: hora,
+        tipo: tipo,
+        medio: medio,
+        carne: carne,
+        registrado_el: new Date().toISOString()
+      });
+      agregados++;
+    }
+
+    guardarLocal(lista);
+    return { agregados: agregados, omitidos: omitidos, duplicados: duplicados };
+  }
+
+  function exportarCSV() {
+    var encabezado = ['Fecha', 'Hora', 'Tipo de persona', 'Medio de ingreso', 'Presenta carné'];
+    var filas = listaRegistros().map(function (r) {
+      return [formatearFecha(r.fecha), r.hora, r.tipo, r.medio, r.carne].join(';');
+    });
+    var contenido = '\uFEFF' + encabezado.join(';') + '\r\n' + filas.join('\r\n');
+    var blob = new Blob([contenido], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'uni-control-registros.csv';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }, 500);
+  }
+
+  archivoCsv.addEventListener('change', function () {
+    var input = this;
+    var archivo = input.files && input.files[0];
+    if (!archivo) { return; }
+    var lector = new FileReader();
+    lector.onload = function () {
+      try {
+        var res = importarCSV(String(lector.result));
+        aplicarDatos(listaRegistros(), false);
+        ultimaSync = Date.now();
+        setSync('ok');
+        var partes = [res.agregados + ' registro(s) importado(s)'];
+        if (res.duplicados) { partes.push(res.duplicados + ' ya existían'); }
+        if (res.omitidos) { partes.push(res.omitidos + ' omitido(s) por datos no válidos'); }
+        mostrarAviso(partes.join(' · ') + '.', res.agregados ? 'exito' : 'advertencia');
+      } catch (err) {
+        mostrarAviso('No se pudo importar: ' + mensajeError(err), 'advertencia');
+      }
+      input.value = '';
+    };
+    lector.onerror = function () {
+      mostrarAviso('No se pudo leer el archivo.', 'advertencia');
+      input.value = '';
+    };
+    lector.readAsText(archivo, 'UTF-8');
+  });
+
+  btnExportar.addEventListener('click', function () {
+    if (!registros.length) {
+      mostrarAviso('No hay registros para exportar.', 'advertencia');
+      return;
+    }
+    exportarCSV();
+  });
+
+  /* ================== Estado de conexión y reloj ================== */
   function iniciarEscritura() {
     ocupado = true;
     escrituras++;
@@ -1831,7 +2112,6 @@
     btnActualizar.classList.toggle('girando', cargando);
   }
 
-  /* ================== Reloj y sincronización ================== */
   function setSync(estado) {
     estadoSync = estado;
     syncEl.className = 'sync ' + estado;
@@ -1843,12 +2123,12 @@
     if (estadoSync === 'actualizando') {
       t = 'Actualizando…';
     } else if (estadoSync === 'error') {
-      t = 'Sin conexión con la hoja';
+      t = 'No fue posible leer los registros';
     } else if (ultimaSync) {
       var s = Math.max(0, Math.round((Date.now() - ultimaSync) / 1000));
-      if (s < 5) { t = 'Sincronizado ahora mismo'; }
-      else if (s < 60) { t = 'Sincronizado hace ' + s + ' s'; }
-      else { t = 'Sincronizado hace ' + Math.floor(s / 60) + ' min'; }
+      if (s < 5) { t = 'Guardado en este navegador'; }
+      else if (s < 60) { t = 'Actualizado hace ' + s + ' s'; }
+      else { t = 'Actualizado hace ' + Math.floor(s / 60) + ' min'; }
     } else {
       t = 'Conectando…';
     }
@@ -2610,7 +2890,8 @@
     tipo: { nombre: 'Tipo de persona', tipo: 'cualitativa' },
     medio: { nombre: 'Medio de ingreso', tipo: 'cualitativa' },
     carne: { nombre: 'Presenta carné', tipo: 'cualitativa' },
-    franja: { nombre: 'Franja horaria', tipo: 'cualitativa' }
+    franja: { nombre: 'Franja horaria', tipo: 'cualitativa' },
+    hora: { nombre: 'Hora de ingreso (horas)', tipo: 'cuantitativa' }
   };
   var NOMBRES_CUALITATIVAS = {
     tipo: 'Tipo de persona',
@@ -2665,6 +2946,15 @@
     tbody.appendChild(tr);
   }
 
+  function escaparSVG(valor) {
+    return String(valor).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+  }
+
+  function mostrarGraficoVacio(id, mensaje) {
+    $(id).innerHTML = '<p class="analisis-vacio">' + escaparSVG(mensaje) + '</p>';
+  }
+
+  /* ---------- Análisis cualitativo ---------- */
   function renderFrecuenciasCualitativas(lista, clave) {
     var cuerpo = $('analisis-cuerpo-frecuencias');
     var cabecera = $('analisis-cabecera-frecuencias');
@@ -2701,6 +2991,308 @@
     });
   }
 
+  function renderGraficosCualitativos(lista, clave) {
+    var conteo = {};
+    lista.forEach(function (r) {
+      var v = valorVariableRegistro(r, clave) || 'Sin dato';
+      conteo[v] = (conteo[v] || 0) + 1;
+    });
+    var cats = Object.keys(conteo).sort(function (a, b) { return a.localeCompare(b, 'es'); });
+    var n = lista.length;
+    if (!n || !cats.length) {
+      mostrarGraficoVacio('analisis-barras', 'No hay registros para graficar.');
+      $('analisis-lectura-texto').textContent = 'No hay datos cualitativos para generar una lectura automática.';
+      return;
+    }
+    var max = Math.max.apply(null, cats.map(function (c) { return conteo[c]; }));
+    var W = 760, row = 42, H = Math.max(150, 50 + cats.length * row), L = 190, R = 80, barMax = W - L - R;
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Diagrama de barras horizontales por categoría">';
+    cats.forEach(function (c, i) {
+      var y = 30 + i * row, fi = conteo[c], pct = fi / n * 100, w = fi / max * barMax;
+      svg += '<text class="sv-txt" x="' + (L - 12) + '" y="' + (y + 17) + '" text-anchor="end" font-size="12">' + escaparSVG(c) + '</text>' +
+             '<rect class="sv-barra-h" x="' + L + '" y="' + y + '" width="' + w + '" height="24" rx="4"/>' +
+             '<text class="sv-txt-fuerte" x="' + (L + w + 8) + '" y="' + (y + 17) + '" font-size="12">' + fi + ' · ' + escaparSVG(numeroCO(pct, 1)) + ' %</text>';
+    });
+    svg += '<text class="sv-txt" x="' + (L + barMax / 2) + '" y="' + (H - 5) + '" text-anchor="middle" font-size="12">Frecuencia (fi) · longitud proporcional</text></svg>';
+    $('analisis-barras').innerHTML = svg;
+    var top = cats.reduce(function (a, c) { return conteo[c] > conteo[a] ? c : a; }, cats[0]);
+    $('analisis-lectura-texto').textContent = 'La categoría más frecuente es «' + top + '», con ' + conteo[top] + ' de ' + n + ' registros (' + numeroCO(conteo[top] / n * 100, 1) + ' %).';
+  }
+
+  function renderAnalisisCualitativo(lista, clave) {
+    $('analisis-titulo-graficos').textContent = 'Frecuencia por categoría';
+    var cuerpoEst = $('analisis-cuerpo-estadisticos');
+    cuerpoEst.textContent = '';
+    filaVaciaAnalisis(cuerpoEst, 3,
+      'La variable seleccionada es cualitativa; consulte su distribución en la tabla de frecuencias.');
+    $('analisis-nota-frecuencias').textContent = 'Frecuencias absolutas, acumuladas y relativas de cada categoría.';
+    renderFrecuenciasCualitativas(lista, clave);
+    renderGraficosCualitativos(lista, clave);
+  }
+
+  /* ---------- Análisis cuantitativo ---------- */
+  function valoresCuantitativos(lista, clave) {
+    var valores = [];
+    lista.forEach(function (r) {
+      var x = NaN;
+      if (clave === 'hora') {
+        var normal = normalizarHora(r.hora);
+        if (normal) {
+          x = Number(normal.slice(0, 2)) + Number(normal.slice(3, 5)) / 60;
+        }
+      }
+      if (isFinite(x)) { valores.push(x); }
+    });
+    return valores;
+  }
+
+  function percentil(ordenado, p) {
+    var n = ordenado.length;
+    if (n === 1) { return ordenado[0]; }
+    var pos = (n - 1) * p;
+    var lo = Math.floor(pos), hi = Math.ceil(pos);
+    return ordenado[lo] + (ordenado[hi] - ordenado[lo]) * (pos - lo);
+  }
+
+  function estadisticosCuantitativos(valores) {
+    var n = valores.length;
+    var orden = valores.slice().sort(function (a, b) { return a - b; });
+    var suma = valores.reduce(function (a, b) { return a + b; }, 0);
+    var media = suma / n;
+    var varianza = n > 1
+      ? valores.reduce(function (a, x) { return a + Math.pow(x - media, 2); }, 0) / (n - 1)
+      : 0;
+    var sd = Math.sqrt(varianza);
+    return {
+      n: n,
+      media: media,
+      sd: sd,
+      varianza: varianza,
+      cv: media ? sd / media * 100 : NaN,
+      min: orden[0],
+      max: orden[n - 1],
+      rango: orden[n - 1] - orden[0],
+      q1: percentil(orden, 0.25),
+      mediana: percentil(orden, 0.5),
+      q3: percentil(orden, 0.75)
+    };
+  }
+
+  function construirIntervalos(est) {
+    if (est.rango === 0) {
+      return [{ lo: est.min - 0.5, hi: est.max + 0.5 }];
+    }
+    var k = Math.max(1, Math.ceil(1 + 3.322 * Math.log10(est.n)));
+    var amp = Math.ceil((est.rango / k) * 100) / 100;
+    var intervalos = [];
+    for (var i = 0; i < k; i++) {
+      var lo = est.min + i * amp;
+      intervalos.push({ lo: lo, hi: lo + amp });
+    }
+    return intervalos;
+  }
+
+  function contarIntervalos(valores, intervalos) {
+    var conteo = intervalos.map(function () { return 0; });
+    var base = intervalos[0].lo;
+    var amp = intervalos[0].hi - intervalos[0].lo;
+    valores.forEach(function (x) {
+      var idx = amp > 0 ? Math.floor((x - base) / amp) : 0;
+      if (idx < 0) { idx = 0; }
+      if (idx >= intervalos.length) { idx = intervalos.length - 1; }
+      conteo[idx]++;
+    });
+    return conteo;
+  }
+
+  function nivelMaximoY(maxF) {
+    if (maxF <= 0) { return 5; }
+    return Math.ceil(maxF * 1.1 / 5) * 5;
+  }
+
+  function renderFrecuenciasCuantitativas(intervalos, conteo, n) {
+    var cuerpo = $('analisis-cuerpo-frecuencias');
+    var cabecera = $('analisis-cabecera-frecuencias');
+    var fila = document.createElement('tr');
+    ['Intervalo', 'fi', 'Fi', 'hi', 'Hi (%)', '%'].forEach(function (t) {
+      var th = document.createElement('th'); th.textContent = t; fila.appendChild(th);
+    });
+    cabecera.appendChild(fila);
+    var acumulada = 0;
+    intervalos.forEach(function (iv, i) {
+      var fi = conteo[i];
+      acumulada += fi;
+      var hi = fi / n;
+      agregarFilaAnalisis(cuerpo, [
+        numeroCO(iv.lo, 2) + ' – ' + numeroCO(iv.hi, 2),
+        numeroCO(fi, 0), numeroCO(acumulada, 0),
+        numeroCO(hi), numeroCO(acumulada / n), numeroCO(hi * 100) + ' %'
+      ]);
+    });
+  }
+
+  function svgHistograma(intervalos, conteo) {
+    var W = 760, H = 400, L = 62, R = 30, T = 34, B = 86;
+    var pw = W - L - R, ph = H - T - B;
+    var k = intervalos.length;
+    var s = pw / (k + 2);
+    var yMax = nivelMaximoY(Math.max.apply(null, conteo));
+    var paso = yMax / 5;
+
+    function yy(f) { return T + ph - (f / yMax) * ph; }
+    function xInicio(i) { return L + (i + 1) * s; }
+
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Histograma de frecuencias con polígono de frecuencias">';
+
+    for (var t = 0; t <= 5; t++) {
+      var f = paso * t, yp = yy(f);
+      svg += '<line class="sv-grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + yp + '" y2="' + yp + '"/>';
+      svg += '<text class="sv-txt" x="' + (L - 8) + '" y="' + (yp + 4) + '" text-anchor="end" font-size="11">' + numeroCO(f, 0) + '</text>';
+    }
+
+    svg += '<line class="sv-axis" x1="' + L + '" x2="' + L + '" y1="' + T + '" y2="' + (T + ph) + '"/>';
+    svg += '<line class="sv-axis" x1="' + L + '" x2="' + (W - R) + '" y1="' + (T + ph) + '" y2="' + (T + ph) + '"/>';
+    svg += '<text class="sv-txt-fuerte" transform="rotate(-90 16 ' + (T + ph / 2) + ')" x="16" y="' + (T + ph / 2) + '" text-anchor="middle" font-size="12">Frecuencia (fi)</text>';
+
+    conteo.forEach(function (fi, i) {
+      var x = xInicio(i), yp = yy(fi);
+      svg += '<rect class="sv-hist-bar" x="' + (x + 1) + '" y="' + yp + '" width="' + (s - 2) + '" height="' + (T + ph - yp) + '"/>';
+    });
+
+    var puntos = [{ x: L + 0.5 * s, f: 0 }];
+    conteo.forEach(function (fi, i) {
+      puntos.push({ x: xInicio(i) + s / 2, f: fi });
+    });
+    puntos.push({ x: L + (k + 1.5) * s, f: 0 });
+
+    svg += '<polyline class="sv-poly" points="' + puntos.map(function (p) {
+      return p.x + ',' + yy(p.f);
+    }).join(' ') + '"/>';
+
+    for (var q = 1; q <= k; q++) {
+      var p = puntos[q];
+      svg += '<circle class="sv-punto-poly" cx="' + p.x + '" cy="' + yy(p.f) + '" r="3.5"/>';
+      svg += '<text class="sv-txt-fuerte" x="' + p.x + '" y="' + (yy(p.f) - 9) + '" text-anchor="middle" font-size="11">' + numeroCO(p.f, 0) + '</text>';
+    }
+
+    for (var j = 0; j <= k; j++) {
+      var valor = j < k ? intervalos[j].lo : intervalos[k - 1].hi;
+      var xb = L + (j + 1) * s;
+      svg += '<line class="sv-axis" x1="' + xb + '" x2="' + xb + '" y1="' + (T + ph) + '" y2="' + (T + ph + 4) + '"/>';
+      svg += '<text class="sv-txt" x="' + xb + '" y="' + (T + ph + 18) + '" text-anchor="middle" font-size="11">' + numeroCO(valor, 2) + '</text>';
+    }
+
+    svg += '<text class="sv-txt-fuerte" x="' + (L + pw / 2) + '" y="' + (H - 36) + '" text-anchor="middle" font-size="12">Intervalos de clase</text>';
+    svg += '<text class="sv-txt" x="' + (L + pw / 2) + '" y="' + (H - 12) + '" text-anchor="middle" font-size="11" font-style="italic">Intervalos de clase · barras = histograma, línea = polígono de frecuencias</text>';
+    svg += '</svg>';
+    return svg;
+  }
+
+  function svgCaja(est, nombre) {
+    var W = 760, H = 230, L = 40, R = 40, yc = 110, alto = 48;
+    var a = est.rango ? est.min : est.min - 1;
+    var b = est.rango ? est.max : est.max + 1;
+    var xa = L + 30, xb = W - R - 30;
+    function x(v) { return xa + (v - a) / (b - a) * (xb - xa); }
+
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Diagrama de caja y bigotes">';
+    svg += '<text class="sv-txt-fuerte" x="' + (W / 2) + '" y="22" text-anchor="middle" font-size="13">Diagrama de caja y bigotes · ' + escaparSVG(nombre) + '</text>';
+    svg += '<text class="sv-media-txt" x="' + x(est.media) + '" y="' + (yc - alto / 2 - 14) + '" text-anchor="middle" font-size="12">x̄ = ' + numeroCO(est.media, 2) + '</text>';
+
+    svg += '<line class="sv-bigote" x1="' + x(est.min) + '" x2="' + x(est.q1) + '" y1="' + yc + '" y2="' + yc + '" stroke-width="1.8"/>';
+    svg += '<line class="sv-bigote" x1="' + x(est.q3) + '" x2="' + x(est.max) + '" y1="' + yc + '" y2="' + yc + '" stroke-width="1.8"/>';
+    svg += '<line class="sv-bigote" x1="' + x(est.min) + '" x2="' + x(est.min) + '" y1="' + (yc - 12) + '" y2="' + (yc + 12) + '" stroke-width="1.8"/>';
+    svg += '<line class="sv-bigote" x1="' + x(est.max) + '" x2="' + x(est.max) + '" y1="' + (yc - 12) + '" y2="' + (yc + 12) + '" stroke-width="1.8"/>';
+
+    svg += '<rect class="sv-caja-box" x="' + x(est.q1) + '" y="' + (yc - alto / 2) + '" width="' + Math.max(2, x(est.q3) - x(est.q1)) + '" height="' + alto + '" rx="2"/>';
+    svg += '<line class="sv-caja-mediana" x1="' + x(est.mediana) + '" x2="' + x(est.mediana) + '" y1="' + (yc - alto / 2) + '" y2="' + (yc + alto / 2) + '"/>';
+    svg += '<circle class="sv-media-punto" cx="' + x(est.media) + '" cy="' + yc + '" r="5"/>';
+
+    var yEtq = yc + alto / 2 + 22;
+    svg += '<text class="sv-txt" x="' + x(est.min) + '" y="' + yEtq + '" text-anchor="middle" font-size="11">Mín: ' + numeroCO(est.min, 2) + '</text>';
+    svg += '<text class="sv-txt" x="' + x(est.q1) + '" y="' + yEtq + '" text-anchor="middle" font-size="11">Q1: ' + numeroCO(est.q1, 2) + '</text>';
+    svg += '<text class="sv-txt" x="' + x(est.q3) + '" y="' + yEtq + '" text-anchor="middle" font-size="11">Q3: ' + numeroCO(est.q3, 2) + '</text>';
+    svg += '<text class="sv-txt" x="' + x(est.mediana) + '" y="' + (yEtq + 16) + '" text-anchor="middle" font-size="11">Me: ' + numeroCO(est.mediana, 2) + '</text>';
+    svg += '<text class="sv-txt" x="' + x(est.max) + '" y="' + yEtq + '" text-anchor="middle" font-size="11">Máx: ' + numeroCO(est.max, 2) + '</text>';
+
+    svg += '</svg>';
+    return svg;
+  }
+
+  function lecturaCuantitativa(est, nombre) {
+    var dif = est.media - est.mediana;
+    var tolerancia = est.sd * 0.1;
+    var sesgo;
+    if (Math.abs(dif) <= tolerancia) {
+      sesgo = 'aproximadamente simétrica (media ≈ mediana)';
+    } else if (dif < 0) {
+      sesgo = 'con sesgo negativo (media &lt; mediana)';
+    } else {
+      sesgo = 'con sesgo positivo (media &gt; mediana)';
+    }
+    var dispersion;
+    if (!isFinite(est.cv)) {
+      dispersion = 'no se puede determinar la dispersión relativa';
+    } else if (est.cv >= 30) {
+      dispersion = 'muy dispersos';
+    } else if (est.cv >= 15) {
+      dispersion = 'moderadamente dispersos';
+    } else {
+      dispersion = 'homogéneos';
+    }
+    var cvTexto = isFinite(est.cv) ? numeroCO(est.cv, 2) + ' %' + (est.cv >= 30 ? ' ≥ 30 %' : '') : '—';
+    return 'Para la variable «' + escaparSVG(nombre) + '», la distribución es <strong>' + sesgo + '</strong>. ' +
+           'Según el Coeficiente de Variación, los datos son <strong>' + dispersion + '</strong> (CV = ' + cvTexto + ').';
+  }
+
+  function renderAnalisisCuantitativo(lista, clave) {
+    var nombre = VARIABLE_ANALISIS[clave].nombre;
+    var valores = valoresCuantitativos(lista, clave);
+    var cuerpoEst = $('analisis-cuerpo-estadisticos');
+    var cuerpoFrec = $('analisis-cuerpo-frecuencias');
+    var cabecera = $('analisis-cabecera-frecuencias');
+    cuerpoEst.textContent = '';
+    cuerpoFrec.textContent = '';
+    cabecera.textContent = '';
+    $('analisis-titulo-graficos').textContent = 'Representaciones gráficas de la variable';
+    $('analisis-nota-frecuencias').textContent = 'Intervalos de clase calculados con la regla de Sturges (k = 1 + 3,322 · log₁₀ n). Cada intervalo incluye su límite inferior y excluye el superior, excepto el último.';
+
+    if (!valores.length) {
+      filaVaciaAnalisis(cuerpoEst, 3, 'No hay horas válidas en los registros para calcular los estadísticos.');
+      filaVaciaAnalisis(cuerpoFrec, 6, 'No hay horas válidas para calcular las frecuencias.');
+      mostrarGraficoVacio('analisis-barras', 'No hay horas válidas para graficar.');
+      $('analisis-lectura-texto').textContent = 'No hay datos de hora válidos para generar una lectura automática.';
+      return;
+    }
+
+    var est = estadisticosCuantitativos(valores);
+    var intervalos = construirIntervalos(est);
+    var conteo = contarIntervalos(valores, intervalos);
+
+    agregarFilaAnalisis(cuerpoEst, ['Número de observaciones (n)', 'Conteo de registros válidos', numeroCO(est.n, 0)]);
+    agregarFilaAnalisis(cuerpoEst, ['Media aritmética (x̄)', 'Σxᵢ / n', numeroCO(est.media, 2)]);
+    agregarFilaAnalisis(cuerpoEst, ['Mediana (Me)', 'Valor central de los datos ordenados', numeroCO(est.mediana, 2)]);
+    agregarFilaAnalisis(cuerpoEst, ['Desviación estándar (s)', '√[Σ(xᵢ − x̄)² / (n − 1)]', numeroCO(est.sd, 2)]);
+    agregarFilaAnalisis(cuerpoEst, ['Varianza (s²)', 'Σ(xᵢ − x̄)² / (n − 1)', numeroCO(est.varianza, 2)]);
+    agregarFilaAnalisis(cuerpoEst, ['Coeficiente de variación (CV)', 's / x̄ × 100', isFinite(est.cv) ? numeroCO(est.cv, 2) + ' %' : '—']);
+    agregarFilaAnalisis(cuerpoEst, ['Mínimo', 'Menor valor observado', numeroCO(est.min, 2)]);
+    agregarFilaAnalisis(cuerpoEst, ['Primer cuartil (Q1)', 'Percentil 25', numeroCO(est.q1, 2)]);
+    agregarFilaAnalisis(cuerpoEst, ['Tercer cuartil (Q3)', 'Percentil 75', numeroCO(est.q3, 2)]);
+    agregarFilaAnalisis(cuerpoEst, ['Máximo', 'Mayor valor observado', numeroCO(est.max, 2)]);
+    agregarFilaAnalisis(cuerpoEst, ['Rango', 'Máx − Mín', numeroCO(est.rango, 2)]);
+    agregarFilaAnalisis(cuerpoEst, ['Rango intercuartílico (RIC)', 'Q3 − Q1', numeroCO(est.q3 - est.q1, 2)]);
+
+    renderFrecuenciasCuantitativas(intervalos, conteo, est.n);
+
+    $('analisis-barras').innerHTML =
+      '<h3>Histograma de frecuencias y polígono</h3>' +
+      svgHistograma(intervalos, conteo) +
+      '<h3>Diagrama de caja y bigotes (boxplot)</h3>' +
+      svgCaja(est, nombre);
+
+    $('analisis-lectura-texto').innerHTML = lecturaCuantitativa(est, nombre);
+  }
+
   function actualizarOpcionesFiltroAnalisis() {
     var variable = $('analisis-variable').value;
     var filtroSelect = $('analisis-filtro-variable');
@@ -2732,59 +3324,25 @@
     }
   }
 
-  function escaparSVG(valor) {
-    return String(valor).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
-  }
-
-  function mostrarGraficoVacio(id, mensaje) {
-    $(id).innerHTML = '<p class="analisis-vacio">' + escaparSVG(mensaje) + '</p>';
-  }
-
-  function renderGraficosCualitativos(lista, clave) {
-    var conteo = {};
-    lista.forEach(function (r) {
-      var v = valorVariableRegistro(r, clave) || 'Sin dato';
-      conteo[v] = (conteo[v] || 0) + 1;
-    });
-    var cats = Object.keys(conteo).sort(function (a, b) { return a.localeCompare(b, 'es'); });
-    var n = lista.length;
-    if (!n || !cats.length) {
-      mostrarGraficoVacio('analisis-barras', 'No hay registros para graficar.');
-      $('analisis-lectura-texto').textContent = 'No hay datos cualitativos para generar una lectura automática.';
-      return;
-    }
-    var max = Math.max.apply(null, cats.map(function (c) { return conteo[c]; }));
-    var W = 760, row = 42, H = Math.max(150, 50 + cats.length * row), L = 190, R = 80, barMax = W - L - R;
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Diagrama de barras horizontales por categoría">';
-    cats.forEach(function (c, i) {
-      var y = 30 + i * row, fi = conteo[c], pct = fi / n * 100, w = fi / max * barMax;
-      svg += '<text class="sv-txt" x="' + (L - 12) + '" y="' + (y + 17) + '" text-anchor="end" font-size="12">' + escaparSVG(c) + '</text>' +
-             '<rect class="sv-barra-h" x="' + L + '" y="' + y + '" width="' + w + '" height="24" rx="4"/>' +
-             '<text class="sv-txt-fuerte" x="' + (L + w + 8) + '" y="' + (y + 17) + '" font-size="12">' + fi + ' · ' + escaparSVG(numeroCO(pct, 1)) + ' %</text>';
-    });
-    svg += '<text class="sv-txt" x="' + (L + barMax / 2) + '" y="' + (H - 5) + '" text-anchor="middle" font-size="12">Frecuencia (fi) · longitud proporcional</text></svg>';
-    $('analisis-barras').innerHTML = svg;
-    var top = cats.reduce(function (a, c) { return conteo[c] > conteo[a] ? c : a; }, cats[0]);
-    $('analisis-lectura-texto').textContent = 'La categoría más frecuente es «' + top + '», con ' + conteo[top] + ' de ' + n + ' registros (' + numeroCO(conteo[top] / n * 100, 1) + ' %).';
-  }
-
   function renderAnalisis() {
     if (!$('analisis-variable')) { return; }
     actualizarOpcionesFiltroAnalisis();
     var clave = $('analisis-variable').value;
+    var info = VARIABLE_ANALISIS[clave];
     var lista = registrosParaAnalisis();
-    $('analisis-resumen-datos').textContent = 'Variable: ' + VARIABLE_ANALISIS[clave].nombre +
+    $('analisis-resumen-datos').textContent = 'Variable: ' + info.nombre +
+      ' · ' + (info.tipo === 'cuantitativa' ? 'Cuantitativa' : 'Cualitativa') +
       ' · Registros analizados: ' + lista.length +
       (registros.length !== lista.length ? ' de ' + registros.length + ' registros totales' : '');
     var mensaje = $('analisis-mensaje');
     mensaje.className = 'info-tabla';
     mensaje.textContent = '';
-    $('analisis-cuerpo-estadisticos').textContent = '';
-    filaVaciaAnalisis($('analisis-cuerpo-estadisticos'), 3,
-      'La variable seleccionada es cualitativa; consulte su distribución en la tabla de frecuencias.');
-    $('analisis-nota-frecuencias').textContent = 'Frecuencias absolutas, acumuladas y relativas de cada categoría.';
-    renderFrecuenciasCualitativas(lista, clave);
-    renderGraficosCualitativos(lista, clave);
+
+    if (info.tipo === 'cuantitativa') {
+      renderAnalisisCuantitativo(lista, clave);
+    } else {
+      renderAnalisisCualitativo(lista, clave);
+    }
     refrescarDesplegables();
   }
 
@@ -2802,9 +3360,6 @@
   }
   function ordenarFechasInforme() {
     return registros.map(function (r) { return String(r.fecha || '').trim(); }).filter(Boolean).sort();
-  }
-  function bloqueMedidaInforme(etiqueta, valor) {
-    return '<div class="informe-medida"><small>' + escaparInforme(etiqueta) + '</small><strong>' + escaparInforme(valor) + '</strong></div>';
   }
   function tablaInforme(encabezados, filas, total) {
     var h = '<table class="informe-tabla"><thead><tr>' + encabezados.map(function (x) { return '<th>' + escaparInforme(x) + '</th>'; }).join('') + '</tr></thead><tbody>';
@@ -2876,13 +3431,15 @@
     var a = $('prob-a-variable');
     var anteriorA = a.value || 'tipo';
     a.textContent = '';
-    Object.keys(VARIABLE_ANALISIS).forEach(function (clave) {
+    Object.keys(VARIABLE_ANALISIS).filter(function (clave) {
+      return VARIABLE_ANALISIS[clave].tipo === 'cualitativa';
+    }).forEach(function (clave) {
       var op = document.createElement('option');
       op.value = clave;
       op.textContent = VARIABLE_ANALISIS[clave].nombre + ' · Cualitativa';
       a.appendChild(op);
     });
-    a.value = VARIABLE_ANALISIS[anteriorA] ? anteriorA : 'tipo';
+    a.value = VARIABLES_CUALITATIVAS_PROB.indexOf(anteriorA) >= 0 ? anteriorA : 'tipo';
 
     ['prob-b-variable', 'prob-tabla-variable-fila', 'prob-tabla-variable-col'].forEach(function (id) {
       var sel = $(id), anterior = sel.value;
@@ -3097,7 +3654,7 @@
       btnMas.hidden = true;
       if (estadoTabla === 'cargando') { filaVacia('Cargando registros…'); }
       else if (estadoTabla === 'error') { filaVacia('No se pudieron cargar los registros. Pulse «Actualizar» para intentarlo de nuevo.'); }
-      else { filaVacia('Aún no hay registros. Complete el formulario y pulse «Guardar registro».'); }
+      else { filaVacia('Aún no hay registros. Complete el formulario, guarde un registro o importe un CSV.'); }
       return;
     }
 
@@ -3166,17 +3723,33 @@
     refrescarDesplegables();
   }
 
+  /* Normaliza la hora de cada registro a «HH:MM» antes de usarla. */
+  function normalizarRegistros(lista) {
+    return (lista || []).map(function (r) {
+      var normal = normalizarHora(r.hora);
+      return {
+        id: String(r.id || ''),
+        fecha: String(r.fecha || ''),
+        hora: normal || String(r.hora || ''),
+        tipo: String(r.tipo || ''),
+        medio: String(r.medio || ''),
+        carne: String(r.carne || '')
+      };
+    });
+  }
+
   function aplicarDatos(lista, esDemoServidor) {
     var nuevos = 0;
-    esConjuntoDemostrativo = !!esDemoServidor || lista.some(function (r) { return String(r.id || '').indexOf('DEMO-') === 0; });
+    var normalizados = normalizarRegistros(lista);
+    esConjuntoDemostrativo = !!esDemoServidor;
     if (inicializado) {
-      lista.forEach(function (r) {
+      normalizados.forEach(function (r) {
         if (!idsConocidos[r.id]) { nuevos++; flashIds[r.id] = true; }
       });
     }
     idsConocidos = {};
-    lista.forEach(function (r) { idsConocidos[r.id] = true; });
-    registros = lista;
+    normalizados.forEach(function (r) { idsConocidos[r.id] = true; });
+    registros = normalizados;
     estadoTabla = 'listo';
     inicializado = true;
     renderTodo();
@@ -3203,10 +3776,6 @@
           return;
         }
         var nuevos = aplicarDatos(resp.registros, resp.esDemostracion);
-        if (resp.urlHoja) {
-          enlaceHoja.href = resp.urlHoja;
-          enlaceHoja.hidden = false;
-        }
         ultimaSync = Date.now();
         setSync('ok');
         if (opciones.manual) {

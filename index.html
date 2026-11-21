@@ -20,7 +20,6 @@
     --border-strong: #D6D3D1;
     --accent: #292524;
     --accent-text: #FFFFFF;
-    --accent-soft: #EEEDEB;
     --highlight: #0F766E;
     --highlight-soft: #E3F2F0;
     --warn: #B45309;
@@ -41,7 +40,6 @@
     --ilu-op: .24;
   }
 
-  /* Modo oscuro según el sistema, si el usuario no eligió nada */
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       color-scheme: dark;
@@ -56,7 +54,6 @@
       --border-strong: #44403C;
       --accent: #E7E5E4;
       --accent-text: #1C1917;
-      --accent-soft: #292524;
       --highlight: #2DD4BF;
       --highlight-soft: #12302C;
       --warn: #FBBF24;
@@ -90,7 +87,6 @@
     --border-strong: #44403C;
     --accent: #E7E5E4;
     --accent-text: #1C1917;
-    --accent-soft: #292524;
     --highlight: #2DD4BF;
     --highlight-soft: #12302C;
     --warn: #FBBF24;
@@ -110,7 +106,6 @@
     --ilu-op: .16;
   }
 
-  /* ============ Ilustración de fondo: portería ============ */
   :root {
     --ilustracion: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='1040' cy='130' r='70' fill='%23FBBF24' opacity='.7'/%3E%3Cpath d='M0 600 Q260 560 540 598 T1200 586 V800 H0Z' fill='%2314B8A6' opacity='.45'/%3E%3Cpath d='M0 640 Q400 620 800 642 T1200 636 V800 H0Z' fill='%230F766E' opacity='.35'/%3E%3Crect x='0' y='650' width='1200' height='150' fill='%2364748B' opacity='.55'/%3E%3Cpath d='M0 728 H1200' stroke='%23FFFFFF' stroke-width='6' stroke-dasharray='40 30' opacity='.85'/%3E%3Crect x='70' y='660' width='190' height='60' rx='22' fill='%23A78BFA'/%3E%3Crect x='112' y='628' width='100' height='42' rx='14' fill='%23C4B5FD'/%3E%3Ccircle cx='120' cy='722' r='16' fill='%231E293B'/%3E%3Ccircle cx='220' cy='722' r='16' fill='%231E293B'/%3E%3Crect x='300' y='470' width='14' height='190' rx='6' fill='%233B82F6'/%3E%3Crect x='250' y='530' width='112' height='12' rx='6' fill='%233B82F6'/%3E%3Crect x='292' y='476' width='30' height='12' rx='6' fill='%2360A5FA'/%3E%3Crect x='540' y='520' width='16' height='140' fill='%23334155'/%3E%3Crect x='556' y='528' width='230' height='16' rx='8' fill='%23F97316'/%3E%3Crect x='600' y='528' width='18' height='16' fill='%23FFFFFF' opacity='.9'/%3E%3Crect x='660' y='528' width='18' height='16' fill='%23FFFFFF' opacity='.9'/%3E%3Crect x='720' y='528' width='18' height='16' fill='%23FFFFFF' opacity='.9'/%3E%3Cpolygon points='735,440 872,384 1009,440' fill='%23F59E0B'/%3E%3Crect x='752' y='440' width='240' height='210' rx='8' fill='%2314B8A6'/%3E%3Crect x='795' y='480' width='100' height='78' rx='6' fill='%23E0F2FE'/%3E%3Crect x='925' y='510' width='42' height='140' rx='4' fill='%230F766E'/%3E%3Crect x='800' y='456' width='120' height='16' rx='4' fill='%23FFFFFF' opacity='.9'/%3E%3C/svg%3E");
   }
@@ -146,7 +141,6 @@
   h1, h2, h3 { letter-spacing: -.01em; }
   .contenedor { width: 100%; max-width: 1140px; margin: 0 auto; padding: 0 20px; }
 
-  /* ---------- Animaciones ---------- */
   @keyframes girar { to { transform: rotate(360deg); } }
   @keyframes latido {
     0%, 100% { box-shadow: 0 0 0 0 rgba(45, 212, 191, .45); }
@@ -161,12 +155,9 @@
     20%, 60% { transform: translateX(-5px); }
     40%, 80% { transform: translateX(5px); }
   }
-  @keyframes rebote { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-  @keyframes franjas { to { background-position: 34px 0; } }
 
   .pulso { display: inline-block; animation: pop .45s ease; }
 
-  /* ---------- Encabezado ---------- */
   .encabezado {
     border-bottom: 1px solid var(--border);
     padding: 18px 0;
@@ -237,7 +228,6 @@
   .btn-tema .icono-tema { display: inline-block; transition: transform .4s ease; }
   .btn-tema.girar .icono-tema { transform: rotate(360deg); }
 
-  /* ---------- Pestañas ---------- */
   .barra-pestanas {
     position: sticky;
     top: 0;
@@ -246,7 +236,6 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--border);
-    margin-top: 0;
   }
   .pestanas {
     position: relative;
@@ -280,7 +269,6 @@
     font-weight: 600;
   }
   .pestana:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-  .indicador { display: none; }
   .insignia {
     background: var(--surface-3);
     color: var(--text-2);
@@ -296,7 +284,6 @@
   main { padding: 24px 0 32px; }
   .panel.entra { animation: aparecer .35s ease; }
 
-  /* ---------- Tarjetas ---------- */
   .tarjeta {
     background: color-mix(in srgb, var(--surface) 94%, transparent);
     border: 1px solid var(--border);
@@ -310,7 +297,6 @@
   .tarjeta h3 { font-size: .95rem; font-weight: 600; color: var(--text); }
   .nota { font-size: .82rem; color: var(--text-3); margin: -6px 0 18px; }
 
-  /* ---------- Indicadores (KPI) ---------- */
   .kpis {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -347,7 +333,6 @@
   .kpi-etq { font-size: .78rem; color: var(--text-2); font-weight: 500; }
   .kpi-sub { font-size: .72rem; color: var(--text-3); }
 
-  /* ---------- Formulario ---------- */
   .bloque-registro { display: grid; grid-template-columns: 1fr; gap: 20px; }
   .rejilla { display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 14px; }
 
@@ -383,7 +368,6 @@
   .campo .invalido { border-color: var(--warn); background: var(--warn-soft); }
   .campo .sacudir { animation: sacudir .4s; }
 
-  /* ---------- Desplegables animados ---------- */
   .sel-wrap { position: relative; width: 100%; }
   .sel-wrap.en-filtros { flex: 0 1 200px; width: auto; min-width: 170px; }
   .sel-oculto { display: none !important; }
@@ -589,7 +573,6 @@
   .btn-sec:hover:not(:disabled) { background: var(--surface-3); }
   .btn-sec:disabled { opacity: .45; cursor: not-allowed; }
 
-  /* ---------- Vista previa ---------- */
   .pase {
     display: flex; justify-content: center; gap: 12px;
     font-size: 1.8rem;
@@ -620,7 +603,6 @@
   .resumen-previo li strong { color: var(--text-3); font-weight: 500; text-align: right; transition: color .2s; }
   .resumen-previo li.listo strong { color: var(--text); font-weight: 600; }
 
-  /* ---------- Gráficos ---------- */
   .graficos {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -654,7 +636,6 @@
     transition: width .8s cubic-bezier(.2, .8, .2, 1);
   }
   .c-neutro { background: var(--text-2); }
-  .c-acento { background: var(--highlight); }
 
   .dona-caja { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
   .dona {
@@ -734,7 +715,6 @@
     font-size: .875rem;
   }
 
-  /* ---------- Tabla y filtros ---------- */
   .cabecera-tabla {
     display: flex; align-items: center; justify-content: space-between;
     gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
@@ -887,11 +867,8 @@
   .analisis-controles { align-items: end; }
   #analisis-mensaje { margin: 8px 0 0; color: var(--text-2); }
   #analisis-mensaje.error { color: var(--danger); }
-  #analisis-cuerpo-estadisticos td:last-child,
   #analisis-cuerpo-frecuencias td:not(:first-child) { font-variant-numeric: tabular-nums; }
   .analisis-vacio { text-align: center; color: var(--text-3); padding: 24px 10px !important; }
-  .analisis-formula { color: var(--text-3); font-size: .84rem; }
-  .numero { font-variant-numeric: tabular-nums; }
   .analisis-grafico { width: 100%; overflow-x: auto; margin: 8px 0 24px; }
   .analisis-grafico svg { display: block; width: 100%; min-width: 320px; height: auto; }
   #analisis-graficos h3 { margin: 18px 0 8px; color: var(--text-2); font-size: .9rem; font-weight: 600; }
@@ -902,14 +879,8 @@
   .sv-axis { stroke: var(--text-3); }
   .sv-txt { fill: var(--text-2); }
   .sv-txt-fuerte { fill: var(--text); font-weight: 600; }
-  .sv-bar { fill: var(--chart-bar); stroke: var(--chart-bar-edge); }
-  .sv-line { stroke: var(--chart-line); }
-  .sv-dot { fill: var(--chart-line); }
-  .sv-caja { fill: var(--chart-box); stroke: var(--chart-box-edge); }
-  .sv-mediana { stroke: var(--text); }
-  .sv-media { fill: var(--chart-line); stroke: var(--surface); }
-  .sv-barra-h { fill: var(--chart-bar); }
   .sv-bigote { stroke: var(--text-2); }
+  .sv-barra-h { fill: var(--chart-bar); }
   .sv-hist-bar { fill: var(--highlight); opacity: .85; }
   .sv-poly { fill: none; stroke: #F59E0B; stroke-width: 2.5; stroke-linejoin: round; }
   .sv-punto-poly { fill: #F59E0B; }
@@ -936,7 +907,7 @@
   .prob-contingencia th:first-child, .prob-contingencia td:first-child { text-align: left; }
   .prob-total { font-weight: 700; background: var(--surface-2); color: var(--text); }
 
-  /* ---------- Construcción / modal / aviso ---------- */
+  /* ---------- Modal y aviso ---------- */
   .modal-fondo {
     position: fixed; inset: 0; z-index: 200;
     display: flex; align-items: center; justify-content: center;
@@ -993,71 +964,76 @@
 
   .pie { text-align: center; font-size: .78rem; color: var(--text-3); padding: 0 20px 32px; }
 
-  /* ---------- Informe ---------- */
+  /* ---------- Informe en formato APA 7 ---------- */
   .informe-acciones { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 0 0 18px; }
   .informe-acciones .btn-principal { flex: 0 0 auto; }
-  .informe-documento {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radio);
-    padding: clamp(20px, 4vw, 48px);
-    box-shadow: var(--shadow);
-    color: var(--text);
-  }
-  .informe-portada { text-align: center; border-bottom: 1px solid var(--border-strong); padding: 10px 0 26px; margin-bottom: 26px; }
-  .informe-sello { font-size: .72rem; letter-spacing: .18em; font-weight: 700; color: var(--text-3); margin-bottom: 14px; }
-  .informe-portada h1 { font-size: clamp(1.3rem, 3vw, 1.9rem); line-height: 1.25; color: var(--text); max-width: 850px; margin: 0 auto 12px; }
-  .informe-subtitulo { font-weight: 500; color: var(--text-3); }
-  .informe-datos-portada {
-    text-align: left; max-width: 760px; margin: 22px auto 0;
-    padding: 14px 18px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-  }
-  .informe-datos-portada p { margin: 5px 0; color: var(--text-2); }
-  .informe-datos-portada strong { color: var(--text); }
-  .informe-seccion { margin: 26px 0; }
-  .informe-seccion > h2 {
-    font-size: 1.1rem; color: var(--text);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px; margin: 0 0 14px;
-  }
-  .informe-ficha { display: grid; grid-template-columns: minmax(135px, 190px) 1fr; gap: 10px 18px; margin: 0; }
-  .informe-ficha dt { font-weight: 600; color: var(--text); }
-  .informe-ficha dd { margin: 0; color: var(--text-2); }
-  .informe-ficha ul { margin: 0; padding-left: 20px; }
-  .informe-variable {
-    margin: 20px 0; padding: 18px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    break-inside: avoid;
-    background: var(--surface-2);
-  }
-  .informe-variable h3 { color: var(--text); margin: 0 0 10px; font-size: 1rem; }
-  .informe-tabla { width: 100%; border-collapse: collapse; font-size: .86rem; margin: 10px 0 14px; }
-  .informe-tabla th, .informe-tabla td { border: 1px solid var(--border); padding: 7px 9px; text-align: left; color: var(--text); }
-  .informe-tabla th { background: var(--surface-3); color: var(--text-2); font-weight: 600; }
-  .informe-tabla tfoot { font-weight: 700; background: var(--surface-3); }
-  .informe-medidas { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 8px; margin: 10px 0; }
-  .informe-medida { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 9px; }
-  .informe-medida small { display: block; color: var(--text-3); font-size: .75rem; }
-  .informe-medida strong { font-size: 1rem; color: var(--text); }
-  .informe-barras { display: grid; gap: 8px; margin: 12px 0; }
-  .informe-barra-fila { display: grid; grid-template-columns: minmax(95px, 170px) 1fr 84px; gap: 8px; align-items: center; font-size: .82rem; color: var(--text-2); }
-  .informe-barra-fondo { height: 10px; background: var(--surface-3); border-radius: 20px; overflow: hidden; }
-  .informe-barra { height: 100%; background: var(--text-2); border-radius: 20px; }
-  .informe-editable textarea {
-    width: 100%; min-height: 110px; padding: 12px;
-    border: 1px solid var(--border-strong);
-    border-radius: 8px;
-    font: inherit; resize: vertical;
-    margin: 0 0 18px;
-    background: var(--surface-2);
-    color: var(--text);
-  }
-  .informe-editable textarea:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 22%, transparent); }
   .nota-informe { color: var(--text-3); font-size: .88rem; }
+
+  .informe-documento.apa {
+    --text: #000; --text-2: #000; --text-3: #333; --surface: #fff; --surface-2: #fff; --surface-3: #f2f2f2;
+    --border: #000; --border-strong: #000; --grid: #d9d9d9; --chart-bar: #9a9a9a; --highlight: #555; --focus: #000;
+    background: #fff;
+    color: #000;
+    border: 1px solid #cfcfcf;
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    max-width: 21.59cm;
+    margin: 0 auto;
+    padding: 2.4cm;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+    line-height: 2;
+    text-align: left;
+  }
+  .apa-portada {
+    min-height: 22cm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+  .apa-centro { margin: 0; text-align: center; }
+  .apa-titulo-portada { font-weight: bold; font-size: 14pt; margin: 0 0 2cm; line-height: 1.5; }
+  .apa-h1 { font-size: 12pt; font-weight: bold; text-align: center; margin: 0; line-height: 2; }
+  .apa-h2 { font-size: 12pt; font-weight: bold; text-align: left; margin: 0; line-height: 2; }
+  .apa-p { margin: 0; text-indent: 1.27cm; text-align: left; }
+  .apa-lista { margin: 0; padding-left: 1.27cm; }
+  .apa-ref { margin: 0; padding-left: 1.27cm; text-indent: -1.27cm; }
+  .apa-rotulo { margin: 1em 0 0; font-weight: bold; line-height: 1.5; }
+  .apa-titulo-tabla { margin: 0 0 .4em; font-style: italic; line-height: 1.5; }
+  .apa-nota { margin: .5em 0 1.2em; font-size: 10pt; line-height: 1.4; }
+  .apa-tabla { width: 100%; border-collapse: collapse; font-size: 10.5pt; line-height: 1.4; }
+  .apa-tabla th, .apa-tabla td { padding: 4px 6px; text-align: left; vertical-align: top; }
+  .apa-tabla thead th { border-top: 1.5px solid #000; border-bottom: 1px solid #000; font-weight: bold; }
+  .apa-tabla tbody tr:last-child td { border-bottom: 1.5px solid #000; }
+  .apa-figura { text-align: center; margin: .4em 0 0; }
+  .apa-figura svg { display: block; width: 100%; max-width: 16cm; height: auto; margin: 0 auto; }
+  .apa-area {
+    width: 100%;
+    min-height: 4cm;
+    font: inherit;
+    font-size: 12pt;
+    line-height: 2;
+    color: #000;
+    background: #fff;
+    border: 1px dashed #999;
+    padding: .2cm;
+    resize: none;
+    overflow: hidden;
+    margin: 0 0 .5cm;
+  }
+  .apa-nota-pantalla { font-size: .85rem; color: var(--text-3); text-align: center; line-height: 1.5; }
+
+  .informe-documento.apa .sv-hist-bar { fill: #c9c9c9; stroke: #000; stroke-width: 1; opacity: 1; }
+  .informe-documento.apa .sv-poly { stroke: #000; stroke-width: 2; }
+  .informe-documento.apa .sv-punto-poly { fill: #000; }
+  .informe-documento.apa .sv-caja-box { fill: #fff; stroke: #000; stroke-width: 1.5; }
+  .informe-documento.apa .sv-caja-mediana { stroke: #000; stroke-width: 2.5; }
+  .informe-documento.apa .sv-media-punto { fill: #000; }
+  .informe-documento.apa .sv-media-txt { fill: #000; }
+  .informe-documento.apa .sv-bigote { stroke: #000; }
+  .informe-documento.apa .sv-barra-h { fill: #9a9a9a; stroke: #000; stroke-width: .5; }
+  .informe-documento.apa text { font-family: "Times New Roman", Times, serif; }
 
   /* ---------- Responsive ---------- */
   @media (min-width: 480px) {
@@ -1078,6 +1054,7 @@
     .encabezado { padding: 14px 0; }
     .reloj { text-align: left; }
     .acciones-encabezado { width: 100%; justify-content: space-between; }
+    .informe-documento.apa { padding: 1.2rem; font-size: 11pt; }
     .tabla thead { display: none; }
     .tabla, .tabla tbody, .tabla tr, .tabla td { display: block; width: 100%; }
     .tabla tbody tr {
@@ -1114,7 +1091,7 @@
     }
   }
 
-  /* ---------- Impresión (siempre en claro, sin ilustración) ---------- */
+  /* ---------- Impresión (papel carta, márgenes APA de 2,4 cm) ---------- */
   @media print {
     :root, html[data-theme="light"], html[data-theme="dark"] {
       --bg: #fff; --surface: #fff; --surface-2: #fff; --surface-3: #f2f2f2;
@@ -1124,18 +1101,18 @@
       --highlight: #222; --highlight-soft: #eee;
       --shadow: none;
     }
+    @page { size: letter; margin: 2.4cm; }
     body::before { display: none !important; }
-    @page { size: auto; margin: 15mm; }
-    body { background: #fff !important; color: #111 !important; font-size: 10pt; }
+    body { background: #fff !important; color: #111 !important; font-size: 12pt; }
     .encabezado, .barra-pestanas, .no-imprimir, .aviso, .modal-fondo { display: none !important; }
     body * { visibility: hidden !important; }
     #panel-informe, #panel-informe * { visibility: visible !important; }
     #panel-informe { display: block !important; position: absolute !important; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
-    .informe-documento { border: 0 !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; }
-    .informe-variable { break-inside: avoid; border-color: #bbb !important; background: #fff !important; }
-    .informe-editable textarea { border: 1px solid #888 !important; min-height: 95px; white-space: pre-wrap; background: #fff !important; }
-    .informe-seccion h2, .informe-variable h3 { break-after: avoid; }
-    .informe-tabla th { background: #e8e8e8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .informe-documento.apa { padding: 0; border: 0; box-shadow: none; max-width: none; }
+    .apa-pagina { break-before: page; page-break-before: always; }
+    .apa-area { border: none; background: #fff; }
+    .apa-tabla, .apa-figura { break-inside: avoid; }
+    .apa-h1, .apa-h2, .apa-rotulo { break-after: avoid; }
   }
 </style>
 </head>
@@ -1163,7 +1140,6 @@
   </div>
 </header>
 
-
 <div class="barra-pestanas">
   <div class="contenedor">
     <div class="pestanas" role="tablist" aria-label="Secciones de la aplicación">
@@ -1171,7 +1147,6 @@
       <button class="pestana" role="tab" id="tab-analisis" data-panel="panel-analisis" aria-selected="false" aria-controls="panel-analisis" tabindex="-1">Análisis</button>
       <button class="pestana" role="tab" id="tab-probabilidad" data-panel="panel-probabilidad" aria-selected="false" aria-controls="panel-probabilidad" tabindex="-1">Probabilidad</button>
       <button class="pestana" role="tab" id="tab-informe" data-panel="panel-informe" aria-selected="false" aria-controls="panel-informe" tabindex="-1">Informe</button>
-      <span class="indicador" id="indicador" aria-hidden="true"></span>
     </div>
   </div>
 </div>
@@ -1316,7 +1291,6 @@
           <button type="button" class="btn-actualizar" id="btn-exportar">⬇ Exportar CSV</button>
           <label class="btn-actualizar" for="archivo-csv" style="cursor:pointer">⬆ Importar CSV</label>
           <input type="file" id="archivo-csv" accept=".csv,text/csv" hidden>
-          <a class="enlace-hoja" id="enlace-hoja" href="#" target="_blank" rel="noopener" hidden>Abrir hoja de cálculo ↗</a>
         </div>
       </div>
 
@@ -1502,48 +1476,86 @@
     </div>
   </section>
 
-  <!-- ===== INFORME ===== -->
+  <!-- ===== INFORME (formato APA 7) ===== -->
   <section class="panel" id="panel-informe" role="tabpanel" aria-labelledby="tab-informe" hidden>
     <div class="informe-acciones no-imprimir">
       <button type="button" class="btn btn-principal" id="btn-imprimir-informe">Imprimir / Guardar PDF</button>
-      <span class="nota-informe">En el cuadro de impresión seleccione «Guardar como PDF».</span>
+      <span class="nota-informe">Formato APA 7: papel carta, márgenes de 2,4 cm, Times New Roman 12 pt e interlineado doble. En el cuadro de impresión seleccione «Guardar como PDF».</span>
     </div>
-    <article class="informe-documento" id="informe-documento">
-      <header class="informe-portada">
-        <div class="informe-sello">UNIPAZ · UNI CONTROL</div>
-        <h1>Análisis del flujo de acceso en la portería de UNIPAZ</h1>
-        <p class="informe-subtitulo">Proyecto de Aula · Estadística (840601) · UNIPAZ</p>
-        <div class="informe-datos-portada">
-          <p><strong>Integrantes:</strong> <span>JESUS MANUEL ARDILA VANEGAS Y JUAN ESTEBAN OLIVEROS</span></p>
-          <p><strong>Periodo de recolección:</strong> <span id="informe-periodo">Sin registros</span></p>
-          <p><strong>Total de registros (n):</strong> <span id="informe-n">0</span></p>
-          <p><strong>Origen de los datos:</strong> <span id="informe-origen">Se realizó con el respectivo encargado.</span></p>
-        </div>
-      </header>
-      <section class="informe-seccion">
-        <h2>1. Ficha técnica</h2>
-        <dl class="informe-ficha">
-          <dt>Objetivo</dt><dd>Analizar el flujo de acceso en la portería de UNIPAZ para identificar las franjas horarias de mayor ingreso y describir las características de las personas que ingresan.</dd>
-          <dt>Población</dt><dd>Usuarios que ingresan por la portería principal de UNIPAZ (estudiantes, docentes, administrativos y visitantes).</dd>
-          <dt>Tipo de muestreo</dt><dd id="informe-muestreo">Muestreo por conveniencia no probabilístico.</dd>
-          <dt>Muestra (n)</dt><dd id="informe-muestra">0 observaciones disponibles.</dd>
-          <dt>Variables</dt><dd><ul><li>Tipo de persona: cualitativa.</li><li>Medio de ingreso: cualitativa.</li><li>Presenta carné: cualitativa.</li><li>Franja horaria: cualitativa calculada.</li></ul></dd>
-        </dl>
+
+    <article class="informe-documento apa" id="informe-documento">
+
+      <section class="apa-portada">
+        <p class="apa-titulo-portada">Análisis del flujo de acceso en la portería de UNIPAZ</p>
+        <p class="apa-centro">Presentado por</p>
+        <p class="apa-centro">JESÚS MANUEL ARDILA VANEGAS</p>
+        <p class="apa-centro">JUAN ESTEBAN OLIVEROS ROMERO</p>
+        <p class="apa-centro">&nbsp;</p>
+        <p class="apa-centro">Dirigido a</p>
+        <p class="apa-centro">OMAR GUERRERO AVILÉS</p>
+        <p class="apa-centro">&nbsp;</p>
+        <p class="apa-centro">Estadística (840601)</p>
+        <p class="apa-centro">Instituto Universitario de la Paz (UNIPAZ)</p>
+        <p class="apa-centro">Ingeniería de Producción</p>
+        <p class="apa-centro">Barrancabermeja, Santander</p>
+        <p class="apa-centro">20/11/2026</p>
       </section>
-      <section class="informe-seccion">
-        <h2>2. Resultados de todas las variables</h2>
-        <p class="nota-informe">Las tablas, medidas y gráficos se calculan automáticamente con los registros disponibles. Los datos faltantes se indican en cada apartado.</p>
-        <div id="informe-resultados"><p>Esperando datos…</p></div>
+
+      <section class="apa-pagina">
+        <h2 class="apa-h1">Introducción y objetivo</h2>
+        <p class="apa-p">La portería principal de la Institución Universitaria de la Paz (UNIPAZ) es el punto por el que ingresan estudiantes, docentes, personal administrativo y visitantes. Conocer en qué momentos se concentra el ingreso permite organizar mejor el personal de control y reducir las esperas en las horas de mayor afluencia, lo que contribuye a un servicio de acceso más eficiente para la comunidad universitaria.</p>
+        <p class="apa-p">Con este estudio se quiso saber cuáles son las franjas horarias de mayor ingreso y cómo son las personas que ingresan según su tipo, el medio de ingreso que utilizan y si presentan el carné. Para ello se diseñó una aplicación web de registro y se analizaron los datos recolectados.</p>
+        <p class="apa-p">El objetivo general fue analizar el flujo de acceso en la portería de UNIPAZ para identificar las franjas horarias de mayor ingreso y describir las características de las personas que ingresan. De manera específica, se propuso:</p>
+        <ul class="apa-lista">
+          <li>Describir la distribución de la hora de ingreso mediante tablas de frecuencias, gráficos y medidas estadísticas.</li>
+          <li>Caracterizar a las personas que ingresan según el tipo de persona, el medio de ingreso y la presentación del carné.</li>
+          <li>Calcular probabilidades de eventos a partir de los registros.</li>
+        </ul>
       </section>
-      <section class="informe-seccion informe-editable">
-        <h2>3. Interpretación</h2>
-        <textarea id="informe-interpretacion" rows="5" placeholder="Escriban aquí la interpretación de los resultados…"></textarea>
-        <h2>4. Conclusiones</h2>
-        <textarea id="informe-conclusiones" rows="5" placeholder="Escriban aquí las conclusiones del estudio…"></textarea>
-        <h2>5. Recomendaciones para la dependencia</h2>
-        <textarea id="informe-recomendaciones" rows="5" placeholder="Escriban aquí las recomendaciones para la dependencia…"></textarea>
-        <p class="nota no-imprimir" id="informe-guardado">Los textos se guardan automáticamente en este navegador.</p>
+
+      <section class="apa-pagina">
+        <h2 class="apa-h1">Metodología</h2>
+        <div id="inf-metodologia"></div>
       </section>
+
+      <section class="apa-pagina">
+        <h2 class="apa-h1">Resultados</h2>
+        <div id="inf-resultados"></div>
+      </section>
+
+      <section class="apa-pagina">
+        <h2 class="apa-h1">Interpretación</h2>
+        <div id="inf-interpretacion-auto"></div>
+        <h3 class="apa-h2">Interpretación del equipo</h3>
+        <textarea id="informe-interpretacion" class="apa-area" rows="6" placeholder="Expliquen qué significan los resultados para el espacio estudiado. No basta con repetir las cifras."></textarea>
+      </section>
+
+      <section class="apa-pagina">
+        <h2 class="apa-h1">Conclusiones y propuestas de mejora</h2>
+        <h3 class="apa-h2">Conclusiones</h3>
+        <textarea id="informe-conclusiones" class="apa-area" rows="6" placeholder="Escriban las conclusiones del estudio, sustentadas en las tablas y figuras."></textarea>
+        <h3 class="apa-h2">Propuestas de mejora</h3>
+        <textarea id="informe-recomendaciones" class="apa-area" rows="8" placeholder="Escriban al menos tres propuestas concretas para la portería, cada una sustentada en los datos."></textarea>
+      </section>
+
+      <section class="apa-pagina">
+        <h2 class="apa-h1">Referencias</h2>
+        <p class="apa-ref">American Psychological Association. (2020). <i>Publication manual of the American Psychological Association</i> (7th ed.). https://doi.org/10.1037/0000165-000</p>
+        <p class="apa-ref">Ardila Vanegas, J. M., &amp; Oliveros Romero, J. E. (2026). <i>Uni Control: Registro y análisis del flujo de acceso en la portería de UNIPAZ</i> [Aplicación web]. https://manu1123-rr.github.io/Porter-a---Grupo-5-/</p>
+        <p class="apa-ref">Sturges, H. A. (1926). The choice of a class interval. <i>Journal of the American Statistical Association, 21</i>(153), 65–66. https://doi.org/10.1080/01621459.1926.10502161</p>
+      </section>
+
+      <section class="apa-pagina">
+        <h2 class="apa-h1">Anexos</h2>
+        <p class="apa-p"><b>Anexo A.</b> Base de datos completa de los registros, en formato CSV. Se entrega como archivo aparte junto con este informe.</p>
+        <p class="apa-p"><b>Anexo B.</b> Enlaces de la aplicación y del repositorio de GitHub:</p>
+        <ul class="apa-lista">
+          <li>Aplicación: <a href="https://manu1123-rr.github.io/Porter-a---Grupo-5-/">https://manu1123-rr.github.io/Porter-a---Grupo-5-/</a></li>
+          <li>Repositorio: <a href="https://github.com/Manu1123-rr/Porter-a---Grupo-5-">https://github.com/Manu1123-rr/Porter-a---Grupo-5-</a></li>
+        </ul>
+      </section>
+
+      <p class="apa-nota-pantalla no-imprimir" id="informe-guardado">Los textos del informe se guardan automáticamente en este navegador.</p>
     </article>
   </section>
 
@@ -1551,7 +1563,6 @@
 
 <footer class="pie">Uni Control · Proyecto de Estadística · UNIPAZ · Datos guardados en este navegador</footer>
 
-<!-- Ventana de confirmación -->
 <div class="modal-fondo" id="modal" hidden>
   <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="modal-titulo" aria-describedby="modal-texto">
     <div class="modal-icono" id="modal-icono" aria-hidden="true">🗑️</div>
@@ -1629,7 +1640,6 @@
   var btnExportar = $('btn-exportar');
   var archivoCsv = $('archivo-csv');
   var btnMas = $('btn-mas');
-  var enlaceHoja = $('enlace-hoja');
   var enVivoEl = $('en-vivo');
   var textoEnVivo = $('texto-en-vivo');
 
@@ -1651,7 +1661,6 @@
 
   /* ================== Estado ================== */
   var registros = [];
-  var esConjuntoDemostrativo = false;
   var idsConocidos = {};
   var flashIds = {};
   var inicializado = false;
@@ -1884,7 +1893,7 @@
     guardarRegistro: function (d) {
       var nuevo = validarDatos(d);
       var lista = leerLocal();
-      var item = {
+      lista.push({
         id: generarId(),
         fecha: nuevo.fecha,
         hora: nuevo.hora,
@@ -1892,8 +1901,7 @@
         medio: nuevo.medio,
         carne: nuevo.carne,
         registrado_el: new Date().toISOString()
-      };
-      lista.push(item);
+      });
       guardarLocal(lista);
       return {
         registros: listaRegistros(),
@@ -2954,7 +2962,6 @@
     $(id).innerHTML = '<p class="analisis-vacio">' + escaparSVG(mensaje) + '</p>';
   }
 
-  /* ---------- Análisis cualitativo ---------- */
   function renderFrecuenciasCualitativas(lista, clave) {
     var cuerpo = $('analisis-cuerpo-frecuencias');
     var cabecera = $('analisis-cabecera-frecuencias');
@@ -3030,7 +3037,6 @@
     renderGraficosCualitativos(lista, clave);
   }
 
-  /* ---------- Análisis cuantitativo ---------- */
   function valoresCuantitativos(lista, clave) {
     var valores = [];
     lista.forEach(function (r) {
@@ -3044,6 +3050,17 @@
       if (isFinite(x)) { valores.push(x); }
     });
     return valores;
+  }
+
+  function horaDecimalDe(registro) {
+    var normal = normalizarHora(registro.hora);
+    return normal ? Number(normal.slice(0, 2)) + Number(normal.slice(3, 5)) / 60 : NaN;
+  }
+
+  function horaTexto(decimal) {
+    if (!isFinite(decimal)) { return '—'; }
+    var total = Math.round(decimal * 60);
+    return pad(Math.floor(total / 60)) + ':' + pad(total % 60);
   }
 
   function percentil(ordenado, p) {
@@ -3110,27 +3127,6 @@
     return Math.ceil(maxF * 1.1 / 5) * 5;
   }
 
-  function renderFrecuenciasCuantitativas(intervalos, conteo, n) {
-    var cuerpo = $('analisis-cuerpo-frecuencias');
-    var cabecera = $('analisis-cabecera-frecuencias');
-    var fila = document.createElement('tr');
-    ['Intervalo', 'fi', 'Fi', 'hi', 'Hi (%)', '%'].forEach(function (t) {
-      var th = document.createElement('th'); th.textContent = t; fila.appendChild(th);
-    });
-    cabecera.appendChild(fila);
-    var acumulada = 0;
-    intervalos.forEach(function (iv, i) {
-      var fi = conteo[i];
-      acumulada += fi;
-      var hi = fi / n;
-      agregarFilaAnalisis(cuerpo, [
-        numeroCO(iv.lo, 2) + ' – ' + numeroCO(iv.hi, 2),
-        numeroCO(fi, 0), numeroCO(acumulada, 0),
-        numeroCO(hi), numeroCO(acumulada / n), numeroCO(hi * 100) + ' %'
-      ]);
-    });
-  }
-
   function svgHistograma(intervalos, conteo) {
     var W = 760, H = 400, L = 62, R = 30, T = 34, B = 86;
     var pw = W - L - R, ph = H - T - B;
@@ -3182,8 +3178,8 @@
       svg += '<text class="sv-txt" x="' + xb + '" y="' + (T + ph + 18) + '" text-anchor="middle" font-size="11">' + numeroCO(valor, 2) + '</text>';
     }
 
-    svg += '<text class="sv-txt-fuerte" x="' + (L + pw / 2) + '" y="' + (H - 36) + '" text-anchor="middle" font-size="12">Intervalos de clase</text>';
-    svg += '<text class="sv-txt" x="' + (L + pw / 2) + '" y="' + (H - 12) + '" text-anchor="middle" font-size="11" font-style="italic">Intervalos de clase · barras = histograma, línea = polígono de frecuencias</text>';
+    svg += '<text class="sv-txt-fuerte" x="' + (L + pw / 2) + '" y="' + (H - 36) + '" text-anchor="middle" font-size="12">Intervalos de clase (horas)</text>';
+    svg += '<text class="sv-txt" x="' + (L + pw / 2) + '" y="' + (H - 12) + '" text-anchor="middle" font-size="11" font-style="italic">Barras = histograma; línea = polígono de frecuencias</text>';
     svg += '</svg>';
     return svg;
   }
@@ -3282,7 +3278,22 @@
     agregarFilaAnalisis(cuerpoEst, ['Rango', 'Máx − Mín', numeroCO(est.rango, 2)]);
     agregarFilaAnalisis(cuerpoEst, ['Rango intercuartílico (RIC)', 'Q3 − Q1', numeroCO(est.q3 - est.q1, 2)]);
 
-    renderFrecuenciasCuantitativas(intervalos, conteo, est.n);
+    var acumulada = 0;
+    var cabFrec = document.createElement('tr');
+    ['Intervalo', 'fi', 'Fi', 'hi', 'Hi (%)', '%'].forEach(function (t) {
+      var th = document.createElement('th'); th.textContent = t; cabFrec.appendChild(th);
+    });
+    cabecera.appendChild(cabFrec);
+    intervalos.forEach(function (iv, i) {
+      var fi = conteo[i];
+      acumulada += fi;
+      var hi = fi / est.n;
+      agregarFilaAnalisis(cuerpoFrec, [
+        numeroCO(iv.lo, 2) + ' – ' + numeroCO(iv.hi, 2),
+        numeroCO(fi, 0), numeroCO(acumulada, 0),
+        numeroCO(hi), numeroCO(acumulada / est.n), numeroCO(hi * 100) + ' %'
+      ]);
+    });
 
     $('analisis-barras').innerHTML =
       '<h3>Histograma de frecuencias y polígono</h3>' +
@@ -3346,73 +3357,324 @@
     refrescarDesplegables();
   }
 
-  /* ================== Informe ================== */
+  /* ================== Informe (formato APA 7) ================== */
+  var infNumTabla = 0;
+  var infNumFigura = 0;
+
   function escaparInforme(v) {
     return String(v === null || v === undefined ? '' : v).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
-  function fechaInforme(v) {
-    if (!v) { return ''; }
-    var s = String(v);
-    var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-    return m ? m[3] + '/' + m[2] + '/' + m[1] : s;
+
+  function pctTexto(x) {
+    return isFinite(x) ? numeroCO(x * 100, 2) + ' %' : '—';
   }
-  function ordenarFechasInforme() {
-    return registros.map(function (r) { return String(r.fecha || '').trim(); }).filter(Boolean).sort();
+
+  function infParrafo(html) {
+    return '<p class="apa-p">' + html + '</p>';
   }
-  function tablaInforme(encabezados, filas, total) {
-    var h = '<table class="informe-tabla"><thead><tr>' + encabezados.map(function (x) { return '<th>' + escaparInforme(x) + '</th>'; }).join('') + '</tr></thead><tbody>';
-    h += filas.map(function (f) { return '<tr>' + f.map(function (x) { return '<td>' + escaparInforme(x) + '</td>'; }).join('') + '</tr>'; }).join('');
-    h += '</tbody>';
-    if (total) { h += '<tfoot><tr>' + total.map(function (x) { return '<td>' + escaparInforme(x) + '</td>'; }).join('') + '</tr></tfoot>'; }
-    return h + '</table>';
+
+  function infRotulo(tipo, texto) {
+    var num;
+    if (tipo === 'tabla') { infNumTabla++; num = 'Tabla ' + infNumTabla; }
+    else { infNumFigura++; num = 'Figura ' + infNumFigura; }
+    return '<p class="apa-rotulo">' + num + '</p><p class="apa-titulo-tabla">' + escaparInforme(texto) + '</p>';
   }
-  function renderVariableCualitativaInforme(clave, nombre) {
-    var conteo = {}, n = 0;
+
+  function infNota(html) {
+    return '<p class="apa-nota"><i>Nota.</i> ' + html + '</p>';
+  }
+
+  function infTabla(encabezados, filas) {
+    var h = '<table class="apa-tabla"><thead><tr>';
+    encabezados.forEach(function (e) { h += '<th>' + escaparInforme(e) + '</th>'; });
+    h += '</tr></thead><tbody>';
+    filas.forEach(function (f) {
+      h += '<tr>';
+      f.forEach(function (c) { h += '<td>' + escaparInforme(c) + '</td>'; });
+      h += '</tr>';
+    });
+    return h + '</tbody></table>';
+  }
+
+  function fechasUnicas() {
+    var m = {};
+    registros.forEach(function (r) { if (r.fecha) { m[r.fecha] = true; } });
+    return Object.keys(m).sort();
+  }
+
+  function horasValidas() {
+    return valoresCuantitativos(registros, 'hora').sort(function (a, b) { return a - b; });
+  }
+
+  function claveMasFrecuente(mapa) {
+    var mejor = '', max = 0;
+    Object.keys(mapa).sort().forEach(function (k) {
+      if (mapa[k] > max) { max = mapa[k]; mejor = k; }
+    });
+    return { clave: mejor, n: max };
+  }
+
+  function svgBarrasInforme(cats, conteo, n) {
+    var max = Math.max.apply(null, cats.map(function (c) { return conteo[c]; }));
+    var W = 720, row = 40, H = Math.max(120, 40 + cats.length * row), L = 200, R = 110, barMax = W - L - R;
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Gráfico de barras de frecuencias">';
+    cats.forEach(function (c, i) {
+      var y = 20 + i * row, fi = conteo[c], w = max ? fi / max * barMax : 0;
+      svg += '<text class="sv-txt" x="' + (L - 10) + '" y="' + (y + 16) + '" text-anchor="end" font-size="12">' + escaparSVG(c) + '</text>' +
+             '<rect class="sv-barra-h" x="' + L + '" y="' + y + '" width="' + w + '" height="22"/>' +
+             '<text class="sv-txt-fuerte" x="' + (L + w + 6) + '" y="' + (y + 16) + '" font-size="12">' + fi + ' (' + numeroCO(fi / n * 100, 1) + ' %)</text>';
+    });
+    return svg + '</svg>';
+  }
+
+  function htmlMetodologia() {
+    var n = registros.length;
+    var fechas = fechasUnicas();
+    var horas = horasValidas();
+    var h = '';
+
+    h += '<h3 class="apa-h2">Población y muestra</h3>';
+    h += infParrafo('La población está conformada por las personas que ingresan a la Institución Universitaria de la Paz (UNIPAZ) por la portería principal, entre ellas estudiantes, docentes, personal administrativo y visitantes. La muestra está formada por ' + n + ' registros almacenados en la aplicación.');
+
+    h += '<h3 class="apa-h2">Tipo de muestreo</h3>';
+    h += infParrafo('Se utilizó un muestreo por conveniencia no probabilístico. Los registros se tomaron de las personas que ingresaron durante el periodo de observación, sin un procedimiento de selección aleatoria. La recolección se realizó con el respectivo encargado de la portería.');
+
+    h += '<h3 class="apa-h2">Variables registradas</h3>';
+    h += infParrafo('En la Tabla 1 se presentan las variables registradas y su clasificación según el tipo de variable, el subtipo y la escala de medición.');
+    h += infRotulo('tabla', 'Variables registradas y su clasificación');
+    h += infTabla(['Variable', 'Tipo', 'Subtipo', 'Escala de medición'], [
+      ['Tipo de persona', 'Cualitativa', 'Nominal (4 categorías)', 'Nominal'],
+      ['Medio de ingreso', 'Cualitativa', 'Nominal (2 categorías)', 'Nominal'],
+      ['Presenta carné', 'Cualitativa', 'Dicotómica (Sí / No)', 'Nominal'],
+      ['Franja horaria', 'Cualitativa', 'Ordinal, calculada a partir de la hora', 'Ordinal'],
+      ['Hora de ingreso', 'Cuantitativa', 'Continua', 'Intervalo']
+    ]);
+    h += infNota('La hora de ingreso se expresa en horas decimales para su análisis numérico (por ejemplo, 14:30 equivale a 14,5 horas).');
+
+    h += '<h3 class="apa-h2">Días, horarios y número de registros</h3>';
+    if (n && fechas.length && horas.length) {
+      h += infParrafo('Los registros corresponden a ' + fechas.length + ' día(s) de observación, desde el ' + escaparInforme(formatearFecha(fechas[0])) + ' hasta el ' + escaparInforme(formatearFecha(fechas[fechas.length - 1])) + '. Las horas de ingreso se encuentran entre las ' + horaTexto(horas[0]) + ' y las ' + horaTexto(horas[horas.length - 1]) + ', y el número total de registros es ' + n + '.');
+    } else {
+      h += infParrafo('Aún no hay registros para describir los días y horarios de observación.');
+    }
+
+    h += '<h3 class="apa-h2">Instrumento</h3>';
+    h += infParrafo('Como instrumento se utilizó la aplicación web Uni Control, desarrollada por el equipo de trabajo y publicada en GitHub Pages en la dirección <a href="https://manu1123-rr.github.io/Porter-a---Grupo-5-/">https://manu1123-rr.github.io/Porter-a---Grupo-5-/</a>. Cada registro incluye la fecha, la hora de ingreso, el tipo de persona, el medio de ingreso y si la persona presenta el carné. La franja horaria se calcula automáticamente a partir de la hora registrada.');
+
+    return h;
+  }
+
+  function htmlDistribucionHora(valores, n) {
+    var est = estadisticosCuantitativos(valores);
+    var intervalos = construirIntervalos(est);
+    var conteo = contarIntervalos(valores, intervalos);
+    var k = intervalos.length;
+    var amp = intervalos[0].hi - intervalos[0].lo;
+    var h = '';
+
+    h += '<h3 class="apa-h2">Distribución de frecuencias de la hora de ingreso</h3>';
+    h += infParrafo('El rango de las horas registradas es de ' + numeroCO(est.rango, 2) + ' horas, desde las ' + horaTexto(est.min) + ' hasta las ' + horaTexto(est.max) + '. Según la regla de Sturges (Sturges, 1926), el número de clases es k = ' + k + ', con una amplitud de ' + numeroCO(amp, 2) + ' horas por clase. En la Tabla ' + (infNumTabla + 1) + ' se presentan las frecuencias.');
+
+    h += infRotulo('tabla', 'Distribución de frecuencias de la hora de ingreso');
+    var acum = 0;
+    var filas = intervalos.map(function (iv, i) {
+      var fi = conteo[i];
+      acum += fi;
+      return [
+        numeroCO(iv.lo, 2) + ' – ' + numeroCO(iv.hi, 2),
+        numeroCO((iv.lo + iv.hi) / 2, 3),
+        String(fi), String(acum),
+        numeroCO(fi / n, 3), numeroCO(acum / n, 3)
+      ];
+    });
+    h += infTabla(['Intervalo (horas)', 'Marca de clase', 'fi', 'Fi', 'hi', 'Hi'], filas);
+    h += infNota('k = ' + k + ' clases según Sturges; amplitud = ' + numeroCO(amp, 2) + ' horas. fi = frecuencia absoluta; Fi = frecuencia acumulada; hi = fi / n; Hi = Fi / n, con n = ' + n + '.');
+
+    h += infRotulo('figura', 'Histograma de frecuencias y polígono de frecuencias de la hora de ingreso');
+    h += '<div class="apa-figura">' + svgHistograma(intervalos, conteo) + '</div>';
+    h += infNota('Las barras representan la frecuencia absoluta (fi) de cada clase, y la línea une los puntos medios de las clases.');
+
+    var claseModal = 0;
+    for (var i = 1; i < conteo.length; i++) { if (conteo[i] > conteo[claseModal]) { claseModal = i; } }
+    var dm = valores.reduce(function (a, x) { return a + Math.abs(x - est.media); }, 0) / n;
+
+    h += '<h3 class="apa-h2">Medidas de tendencia central y de dispersión</h3>';
+    h += infParrafo('La media, la mediana y la clase modal describen el centro de la distribución. El rango, la desviación media, la varianza, la desviación típica y el coeficiente de variación describen qué tan dispersas están las horas. Los resultados se presentan en la Tabla ' + (infNumTabla + 1) + '.');
+    h += infRotulo('tabla', 'Medidas de tendencia central y de dispersión de la hora de ingreso');
+    h += infTabla(['Medida', 'Valor', 'Método o fórmula'], [
+      ['Media aritmética (x̄)', numeroCO(est.media, 2) + ' h (' + horaTexto(est.media) + ')', 'Σxᵢ / n'],
+      ['Mediana (Me)', numeroCO(est.mediana, 2) + ' h (' + horaTexto(est.mediana) + ')', 'Valor central de los datos ordenados'],
+      ['Clase modal', numeroCO(intervalos[claseModal].lo, 2) + ' – ' + numeroCO(intervalos[claseModal].hi, 2) + ' h (fi = ' + conteo[claseModal] + ')', 'Clase con mayor frecuencia absoluta'],
+      ['Rango', numeroCO(est.rango, 2) + ' h', 'Máx − Mín'],
+      ['Desviación media (DM)', numeroCO(dm, 2) + ' h', 'Σ|xᵢ − x̄| / n'],
+      ['Varianza (s²)', numeroCO(est.varianza, 2), 'Σ(xᵢ − x̄)² / (n − 1)'],
+      ['Desviación típica (s)', numeroCO(est.sd, 2) + ' h', '√s²'],
+      ['Coeficiente de variación (CV)', isFinite(est.cv) ? numeroCO(est.cv, 2) + ' %' : '—', 's / x̄ × 100']
+    ]);
+    h += infNota('Las medidas de tiempo se expresan en horas decimales; entre paréntesis se muestra la hora equivalente en formato hh:mm.');
+
+    var p90 = percentil(valores.slice().sort(function (a, b) { return a - b; }), 0.9);
+    h += '<h3 class="apa-h2">Medidas de ubicación</h3>';
+    h += infParrafo('Los cuartiles dividen los datos en cuatro partes iguales, y el percentil 90 indica la hora hasta la cual ingresa el 90 % de las personas. Estos valores se presentan en la Tabla ' + (infNumTabla + 1) + '.');
+    h += infRotulo('tabla', 'Medidas de ubicación de la hora de ingreso');
+    h += infTabla(['Medida', 'Valor', 'Interpretación'], [
+      ['Primer cuartil (Q1)', numeroCO(est.q1, 2) + ' h (' + horaTexto(est.q1) + ')', 'El 25 % de las personas ingresa a esta hora o antes.'],
+      ['Tercer cuartil (Q3)', numeroCO(est.q3, 2) + ' h (' + horaTexto(est.q3) + ')', 'El 75 % de las personas ingresa a esta hora o antes.'],
+      ['Percentil 90 (P90)', numeroCO(p90, 2) + ' h (' + horaTexto(p90) + ')', 'El 90 % de las personas ingresa a esta hora o antes.']
+    ]);
+    h += infNota('Los valores se calculan por interpolación lineal sobre los datos ordenados.');
+
+    h += infRotulo('figura', 'Diagrama de caja y bigotes de la hora de ingreso');
+    h += '<div class="apa-figura">' + svgCaja(est, 'Hora de ingreso (horas)') + '</div>';
+    h += infNota('La caja abarca del primer al tercer cuartil; la línea gruesa marca la mediana y el punto marca la media.');
+
+    return h;
+  }
+
+  function htmlCualitativaInforme(clave) {
+    var n = registros.length;
+    var nombre = VARIABLE_ANALISIS[clave].nombre;
+    var conteo = {};
     registros.forEach(function (r) {
       var v = valorVariableRegistro(r, clave);
-      if (v !== '' && v !== null) { conteo[v] = (conteo[v] || 0) + 1; n++; }
+      if (v) { conteo[v] = (conteo[v] || 0) + 1; }
     });
-    var cats = Object.keys(conteo).sort(function (a, b) { return conteo[b] - conteo[a] || a.localeCompare(b, 'es'); });
-    var filas = cats.map(function (c, i) {
-      return [c, conteo[c], numeroCO(i === 0 ? conteo[c] : cats.slice(0, i + 1).reduce(function (a, k) { return a + conteo[k]; }, 0), 0), numeroCO(conteo[c] / (n || 1) * 100, 2) + ' %'];
+    var cats = Object.keys(conteo).sort(function (a, b) {
+      return (conteo[b] - conteo[a]) || a.localeCompare(b, 'es');
     });
-    var html = '<section class="informe-variable"><h3>' + escaparInforme(nombre) + ' · Cualitativa</h3>';
-    html += '<p><strong>Observaciones válidas:</strong> ' + n + ' · <strong>Sin dato:</strong> ' + (registros.length - n) + '</p>';
-    html += tablaInforme(['Categoría', 'Frecuencia (fi)', 'Frecuencia acumulada (Fi)', 'Frecuencia relativa'], filas, ['Total', n, n, '100 %']);
-    if (cats.length) {
-      var max = conteo[cats[0]];
-      html += '<div class="informe-barras">' + cats.map(function (c) {
-        return '<div class="informe-barra-fila"><span>' + escaparInforme(c) + '</span><div class="informe-barra-fondo"><div class="informe-barra" style="width:' + (conteo[c] / max * 100) + '%"></div></div><strong>' + conteo[c] + ' (' + numeroCO(conteo[c] / n * 100, 1) + '%)</strong></div>';
-      }).join('') + '</div>';
-      html += '<p><strong>Moda:</strong> ' + escaparInforme(cats.filter(function (c) { return conteo[c] === max; }).join(', ')) + ' (' + max + ' casos).</p>';
-    } else {
-      html += '<p>No hay datos disponibles para esta variable.</p>';
+
+    var h = '<h3 class="apa-h2">' + escaparInforme(nombre) + '</h3>';
+    if (!cats.length) { return h + infParrafo('No hay datos disponibles para esta variable.'); }
+
+    var top = cats[0];
+    h += infParrafo('La categoría más frecuente de ' + escaparInforme(nombre.toLowerCase()) + ' es «' + escaparInforme(top) + '», con ' + conteo[top] + ' registros (' + pctTexto(conteo[top] / n) + '). En la Tabla ' + (infNumTabla + 1) + ' se presentan las frecuencias de todas las categorías.');
+
+    var acum = 0;
+    var filas = cats.map(function (c) {
+      acum += conteo[c];
+      return [c, String(conteo[c]), String(acum), numeroCO(conteo[c] / n, 3), numeroCO(acum / n, 3)];
+    });
+    h += infRotulo('tabla', 'Distribución de frecuencias de ' + nombre.toLowerCase());
+    h += infTabla(['Categoría', 'fi', 'Fi', 'hi', 'Hi'], filas);
+    h += infNota('fi = frecuencia absoluta; Fi = frecuencia acumulada; hi = fi / n; Hi = Fi / n, con n = ' + n + '.');
+
+    h += infRotulo('figura', 'Frecuencia absoluta de ' + nombre.toLowerCase());
+    h += '<div class="apa-figura">' + svgBarrasInforme(cats, conteo, n) + '</div>';
+    h += infNota('Las barras muestran la frecuencia absoluta (fi) de cada categoría.');
+    return h;
+  }
+
+  function htmlProbabilidades() {
+    var n = registros.length;
+    var nM = 0, nE = 0, nME = 0, nC = 0;
+    registros.forEach(function (r) {
+      var esM = r.medio === 'Motocicleta';
+      var esE = r.tipo === 'Estudiante';
+      var hd = horaDecimalDe(r);
+      if (esM) { nM++; }
+      if (esE) { nE++; }
+      if (esM && esE) { nME++; }
+      if (isFinite(hd) && hd >= 10) { nC++; }
+    });
+
+    var h = '<h3 class="apa-h2">Probabilidades de eventos</h3>';
+    h += infParrafo('Sea A el evento «ingresar en motocicleta», B el evento «ser estudiante» y C el evento «ingresar a las 10:00 o después». Cada probabilidad se calcula como la frecuencia relativa del evento en los registros, y los resultados se presentan en la Tabla ' + (infNumTabla + 1) + '.');
+    h += infRotulo('tabla', 'Probabilidades de eventos calculadas con los registros');
+    h += infTabla(['Evento', 'Cálculo', 'Resultado'], [
+      ['P(A)', 'n(A) / n = ' + nM + ' / ' + n, pctTexto(nM / n)],
+      ['P(B)', 'n(B) / n = ' + nE + ' / ' + n, pctTexto(nE / n)],
+      ['P(A ∩ B)', 'n(A ∩ B) / n = ' + nME + ' / ' + n, pctTexto(nME / n)],
+      ['P(A | B)', 'P(A ∩ B) / P(B) = ' + nME + ' / ' + nE, nE ? pctTexto(nME / nE) : 'No definida (P(B) = 0)'],
+      ['P(C)', 'n(C) / n = ' + nC + ' / ' + n, pctTexto(nC / n)]
+    ]);
+    h += infNota('n = total de registros. P(A | B) es la probabilidad de A dado que la persona es estudiante.');
+    return h;
+  }
+
+  function htmlResultados() {
+    var n = registros.length;
+    if (!n) { return infParrafo('Aún no hay registros para calcular los resultados.'); }
+    var valores = horasValidas();
+    if (!valores.length) { return infParrafo('No hay horas válidas para calcular los resultados de la variable cuantitativa.'); }
+
+    var h = htmlDistribucionHora(valores, n);
+    h += htmlCualitativaInforme('tipo');
+    h += htmlCualitativaInforme('medio');
+    h += htmlCualitativaInforme('carne');
+    h += htmlCualitativaInforme('franja');
+    h += htmlProbabilidades();
+    return h;
+  }
+
+  function htmlInterpretacionAuto() {
+    var n = registros.length;
+    if (!n) { return infParrafo('Aún no hay registros para interpretar los resultados.'); }
+
+    var franjas = {}, tipos = {}, medios = {}, si = 0;
+    registros.forEach(function (r) {
+      var hh = horaDe(r.hora);
+      if (hh) { franjas[hh] = (franjas[hh] || 0) + 1; }
+      tipos[r.tipo] = (tipos[r.tipo] || 0) + 1;
+      medios[r.medio] = (medios[r.medio] || 0) + 1;
+      if (r.carne === 'Sí') { si++; }
+    });
+
+    var fr = claveMasFrecuente(franjas);
+    var tp = claveMasFrecuente(tipos);
+    var md = claveMasFrecuente(medios);
+    var valores = horasValidas();
+    var h = '';
+
+    if (fr.n) {
+      h += infParrafo('La franja horaria con mayor flujo es ' + escaparInforme(fr.clave + ':00–' + fr.clave + ':59') + ', con ' + fr.n + ' registros (' + pctTexto(fr.n / n) + ').');
     }
-    return html + '</section>';
+    if (tp.n) {
+      h += infParrafo('La categoría más frecuente de tipo de persona es «' + escaparInforme(tp.clave) + '», con ' + tp.n + ' registros (' + pctTexto(tp.n / n) + ').');
+    }
+    if (md.n) {
+      h += infParrafo('El medio de ingreso más utilizado es ' + escaparInforme(md.clave.toLowerCase()) + ', con ' + md.n + ' registros (' + pctTexto(md.n / n) + ').');
+    }
+    h += infParrafo('El ' + pctTexto(si / n) + ' de las personas presenta el carné.');
+    if (valores.length) {
+      var mediana = percentil(valores, 0.5);
+      h += infParrafo('La mitad de los ingresos ocurre hasta las ' + horaTexto(mediana) + '.');
+    }
+    return h;
   }
 
   function renderInforme() {
-    if (!$('informe-resultados')) { return; }
-    var fechas = ordenarFechasInforme();
-    $('informe-n').textContent = registros.length;
-    $('informe-muestra').textContent = registros.length + ' observaciones ' + (esConjuntoDemostrativo ? 'del conjunto de demostración.' : 'disponibles en la aplicación.');
-    $('informe-origen').textContent = 'Se realizó con el respectivo encargado.';
-    $('informe-muestreo').textContent = 'Muestreo por conveniencia no probabilístico.';
-    $('informe-periodo').textContent = fechas.length ? fechaInforme(fechas[0]) + ' al ' + fechaInforme(fechas[fechas.length - 1]) : 'Sin registros';
-    var html = '';
-    ['tipo', 'medio', 'carne', 'franja'].forEach(function (k) {
-      html += renderVariableCualitativaInforme(k, VARIABLE_ANALISIS[k].nombre);
+    if (!$('inf-metodologia')) { return; }
+    infNumTabla = 0;
+    infNumFigura = 0;
+    $('inf-metodologia').innerHTML = htmlMetodologia();
+    $('inf-resultados').innerHTML = htmlResultados();
+    $('inf-interpretacion-auto').innerHTML = htmlInterpretacionAuto();
+  }
+
+  function ajustarAltura(el) {
+    if (!el) { return; }
+    el.style.height = 'auto';
+    el.style.height = (el.scrollHeight + 4) + 'px';
+  }
+
+  function ajustarTextareasInforme() {
+    ['informe-interpretacion', 'informe-conclusiones', 'informe-recomendaciones'].forEach(function (id) {
+      ajustarAltura($(id));
     });
-    $('informe-resultados').innerHTML = html;
   }
 
   function iniciarCamposInforme() {
-    ['interpretacion', 'conclusiones', 'recomendaciones'].forEach(function (k) {
-      var el = $('informe-' + k), key = 'uniControl_informe_' + k;
+    [
+      ['interpretacion', 'informe-interpretacion'],
+      ['conclusiones', 'informe-conclusiones'],
+      ['recomendaciones', 'informe-recomendaciones']
+    ].forEach(function (par) {
+      var el = $(par[1]), key = 'uniControl_informe_' + par[0];
       try { el.value = localStorage.getItem(key) || ''; } catch (e) { /* sin almacenamiento */ }
       el.addEventListener('input', function () {
+        ajustarAltura(el);
         try {
           localStorage.setItem(key, el.value);
           $('informe-guardado').textContent = 'Guardado automáticamente en este navegador.';
@@ -3421,10 +3683,14 @@
         }
       });
     });
-    $('btn-imprimir-informe').addEventListener('click', function () { renderInforme(); window.print(); });
+    $('btn-imprimir-informe').addEventListener('click', function () {
+      renderInforme();
+      ajustarTextareasInforme();
+      window.print();
+    });
   }
 
-  /* ================== Probabilidad ================== */
+  /* ================== Probabilidad (sección interactiva) ================== */
   var VARIABLES_CUALITATIVAS_PROB = ['tipo', 'medio', 'carne', 'franja'];
 
   function llenarOpcionesProbabilidad() {
@@ -3609,7 +3875,7 @@
     refrescarDesplegables();
   }
 
-  /* ================== Tabla ================== */
+  /* ================== Tabla de registros ================== */
   function crearCelda(etiqueta, contenido, clase) {
     var td = document.createElement('td');
     td.setAttribute('data-label', etiqueta);
@@ -3723,7 +3989,6 @@
     refrescarDesplegables();
   }
 
-  /* Normaliza la hora de cada registro a «HH:MM» antes de usarla. */
   function normalizarRegistros(lista) {
     return (lista || []).map(function (r) {
       var normal = normalizarHora(r.hora);
@@ -3741,7 +4006,6 @@
   function aplicarDatos(lista, esDemoServidor) {
     var nuevos = 0;
     var normalizados = normalizarRegistros(lista);
-    esConjuntoDemostrativo = !!esDemoServidor;
     if (inicializado) {
       normalizados.forEach(function (r) {
         if (!idsConocidos[r.id]) { nuevos++; flashIds[r.id] = true; }
@@ -3816,6 +4080,7 @@
         panel.classList.add('entra');
       }
     });
+    if (boton.id === 'tab-informe') { ajustarTextareasInforme(); }
     if (darFoco) { boton.focus(); }
     boton.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
     window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -238,6 +238,20 @@
   .btn-tema.girar .icono-tema { transform: rotate(360deg); }
 
   /* ---------- Pestañas ---------- */
+  .aviso-demo {
+    margin: 14px auto 0;
+    padding: 11px 15px;
+    border: 1px solid color-mix(in srgb, var(--warn) 35%, var(--border));
+    border-radius: 12px;
+    background: var(--warn-soft);
+    color: var(--text);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: .88rem;
+  }
+  .aviso-demo strong { display: block; margin-bottom: 1px; }
+  .aviso-demo .demo-icono { font-size: 1.1rem; line-height: 1.35; }
   .barra-pestanas {
     position: sticky;
     top: 0;
@@ -374,16 +388,7 @@
     appearance: none;
     -webkit-appearance: none;
   }
-  .campo select {
-    background-image: linear-gradient(45deg, transparent 50%, var(--text-3) 50%),
-                      linear-gradient(135deg, var(--text-3) 50%, transparent 50%);
-    background-position: calc(100% - 18px) 55%, calc(100% - 13px) 55%;
-    background-size: 5px 5px, 5px 5px;
-    background-repeat: no-repeat;
-    padding-right: 32px;
-  }
-  .campo input:focus,
-  .campo select:focus {
+  .campo input:focus {
     outline: none;
     border-color: var(--focus);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 22%, transparent);
@@ -391,6 +396,144 @@
   }
   .campo .invalido { border-color: var(--warn); background: var(--warn-soft); }
   .campo .sacudir { animation: sacudir .4s; }
+
+  /* ---------- Desplegables animados ---------- */
+  .sel-wrap { position: relative; width: 100%; }
+  .sel-wrap.en-filtros { flex: 0 1 200px; width: auto; min-width: 170px; }
+  .sel-oculto { display: none !important; }
+
+  .sel-disp {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 36px 10px 12px;
+    font: inherit;
+    font-size: 16px;
+    text-align: left;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  .sel-disp:disabled { opacity: .6; cursor: not-allowed; }
+  .sel-disp::after {
+    content: "";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid var(--text-3);
+    border-bottom: 2px solid var(--text-3);
+    transform: translateY(-70%) rotate(45deg);
+    transition: transform .35s cubic-bezier(.2, .8, .2, 1);
+    pointer-events: none;
+  }
+  .sel-wrap.abierto .sel-disp::after { transform: translateY(-30%) rotate(225deg); }
+  .sel-disp:focus-visible,
+  .sel-wrap.abierto .sel-disp {
+    outline: none;
+    border-color: var(--focus);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 22%, transparent);
+  }
+  .sel-disp.invalido { border-color: var(--warn); background: var(--warn-soft); }
+  .sel-disp.sacudir { animation: sacudir .4s; }
+  .sel-disp.animar-seleccion { animation: selectSeleccion .28s ease-out; }
+  .sel-texto { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sel-texto.sel-vacio { color: var(--text-3); }
+
+  @keyframes selectSeleccion {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--focus) 0%, transparent); }
+    55% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 20%, transparent); }
+    100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--focus) 0%, transparent); }
+  }
+
+  .sel-lista {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 80;
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    box-shadow: 0 18px 40px rgba(28, 25, 23, .18), var(--shadow);
+    transform-origin: top center;
+    animation: selAbrir .3s cubic-bezier(.2, .9, .3, 1.15) both;
+  }
+  .sel-wrap.arriba .sel-lista {
+    top: auto;
+    bottom: calc(100% + 6px);
+    transform-origin: bottom center;
+    animation-name: selAbrirArriba;
+  }
+  .sel-lista.cerrando { animation: selCerrar .18s ease-in forwards; }
+  .sel-wrap.arriba .sel-lista.cerrando { animation-name: selCerrarArriba; }
+
+  @keyframes selAbrir {
+    from { opacity: 0; transform: translateY(-10px) scale(.94); filter: blur(3px); }
+    to   { opacity: 1; transform: none; filter: none; }
+  }
+  @keyframes selAbrirArriba {
+    from { opacity: 0; transform: translateY(10px) scale(.94); filter: blur(3px); }
+    to   { opacity: 1; transform: none; filter: none; }
+  }
+  @keyframes selCerrar { to { opacity: 0; transform: translateY(-6px) scale(.96); } }
+  @keyframes selCerrarArriba { to { opacity: 0; transform: translateY(6px) scale(.96); } }
+  @keyframes selItem {
+    from { opacity: 0; transform: translateX(-12px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .sel-op {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: .95rem;
+    font-weight: 500;
+    color: var(--text);
+    animation: selItem .34s cubic-bezier(.2, .8, .2, 1) both;
+    animation-delay: calc(var(--i, 0) * 45ms + 60ms);
+    transition: background .18s, color .18s, padding-left .2s;
+  }
+  .sel-op::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 25%;
+    bottom: 25%;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--highlight);
+    transform: scaleY(0);
+    transition: transform .25s cubic-bezier(.2, .9, .3, 1.2);
+  }
+  .sel-op.foco { background: var(--surface-3); padding-left: 20px; }
+  .sel-op.foco::before { transform: scaleY(1); }
+  .sel-op.seleccionada { color: var(--highlight); font-weight: 650; }
+  .sel-op.deshabilitada { opacity: .4; cursor: not-allowed; }
+  .sel-check {
+    margin-left: auto;
+    font-weight: 700;
+    opacity: 0;
+    transform: scale(.4);
+    transition: opacity .2s, transform .2s;
+  }
+  .sel-op.seleccionada .sel-check { opacity: 1; transform: scale(1); animation: pop .45s ease; }
 
   .en-vivo {
     display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px;
@@ -661,10 +804,9 @@
     transform: rotate(45deg);
     pointer-events: none;
   }
-  .buscador input,
-  .filtros select {
+  .buscador input {
     width: 100%;
-    padding: 9px 12px;
+    padding: 9px 12px 9px 36px;
     font-size: 16px;
     font-family: inherit;
     color: var(--text);
@@ -673,10 +815,7 @@
     border-radius: 8px;
     min-height: 42px;
   }
-  .buscador input { padding-left: 36px; }
-  .filtros select { width: auto; flex: 0 1 200px; }
-  .buscador input:focus,
-  .filtros select:focus {
+  .buscador input:focus {
     outline: none;
     border-color: var(--focus);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 22%, transparent);
@@ -971,7 +1110,7 @@
     .tabla tbody td.acciones-celda::before { content: none; }
     .tabla td.vacio { display: block; text-align: center; }
     .tabla td.vacio::before { content: none; }
-    .filtros select { flex: 1 1 100%; }
+    .sel-wrap.en-filtros { flex: 1 1 100%; min-width: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1015,7 +1154,7 @@
       <div class="logo" aria-hidden="true">UC</div>
       <div>
         <h1>Uni Control <span>· Portería UNIPAZ</span></h1>
-        <p>Tiempos de verificación y flujo de acceso</p>
+        <p>Registro y análisis del flujo de acceso</p>
       </div>
     </div>
     <div class="acciones-encabezado">
@@ -1030,6 +1169,7 @@
     </div>
   </div>
 </header>
+
 
 <div class="barra-pestanas">
   <div class="contenedor">
@@ -1232,7 +1372,6 @@
         <div class="campo">
           <label for="analisis-variable">Variable que desea analizar</label>
           <select id="analisis-variable">
-            <option value="tiempo">Tiempo de verificación (s) · Cuantitativa</option>
             <option value="tipo">Tipo de persona · Cualitativa</option>
             <option value="medio">Medio de ingreso · Cualitativa</option>
             <option value="carne">Presenta carné · Cualitativa</option>
@@ -1260,7 +1399,7 @@
 
     <div class="tarjeta" id="analisis-estadisticos">
       <h2>Estadísticos descriptivos</h2>
-      <p class="nota">Varianza y desviación estándar muestrales se calculan con n − 1. Los cuartiles usan el método inclusivo CUARTIL.INC de Excel.</p>
+      <p class="nota">Resumen de la variable seleccionada y sus frecuencias por categoría.</p>
       <div class="contenedor-tabla">
         <table class="tabla">
           <thead><tr><th>Estadístico</th><th>Fórmula / método</th><th>Resultado</th></tr></thead>
@@ -1271,7 +1410,7 @@
 
     <div class="tarjeta" id="analisis-frecuencias">
       <h2>Tabla de frecuencias</h2>
-      <p class="nota" id="analisis-nota-frecuencias">Para variables cuantitativas se agrupan los datos con el número de clases de Sturges.</p>
+      <p class="nota" id="analisis-nota-frecuencias">Frecuencias absolutas, acumuladas y relativas de cada categoría.</p>
       <div class="contenedor-tabla">
         <table class="tabla">
           <thead id="analisis-cabecera-frecuencias"></thead>
@@ -1282,13 +1421,7 @@
 
     <div class="tarjeta" id="analisis-graficos">
       <h2>Representaciones gráficas</h2>
-      <div id="analisis-graficos-cuantitativos">
-        <h3>Histograma y polígono de frecuencias</h3>
-        <div class="analisis-grafico" id="analisis-histograma"></div>
-        <h3>Diagrama de caja y bigotes</h3>
-        <div class="analisis-grafico" id="analisis-caja"></div>
-      </div>
-      <div id="analisis-graficos-cualitativos" hidden>
+      <div id="analisis-graficos-cualitativos">
         <h3>Frecuencia por categoría</h3>
         <div class="analisis-grafico" id="analisis-barras"></div>
       </div>
@@ -1308,17 +1441,6 @@
         <div class="campo">
           <label for="prob-a-variable">Variable del evento A</label>
           <select id="prob-a-variable"></select>
-        </div>
-        <div class="campo" id="prob-a-operador-campo">
-          <label for="prob-a-operador">Condición para A</label>
-          <select id="prob-a-operador">
-            <option value="gt">Mayor que (&gt;)</option>
-            <option value="le">Menor o igual que (≤)</option>
-          </select>
-        </div>
-        <div class="campo" id="prob-a-valor-campo">
-          <label for="prob-a-valor">Valor numérico</label>
-          <input id="prob-a-valor" type="number" step="any" placeholder="Escriba un valor">
         </div>
         <div class="campo" id="prob-a-categoria-campo" hidden>
           <label for="prob-a-categoria">Categoría de A</label>
@@ -1392,22 +1514,23 @@
     <article class="informe-documento" id="informe-documento">
       <header class="informe-portada">
         <div class="informe-sello">UNIPAZ · UNI CONTROL</div>
-        <h1>Análisis de tiempos de verificación y flujo de acceso en la portería de UNIPAZ</h1>
+        <h1>Análisis del flujo de acceso en la portería de UNIPAZ</h1>
         <p class="informe-subtitulo">Proyecto de Aula · Estadística (840601) · UNIPAZ</p>
         <div class="informe-datos-portada">
           <p><strong>Integrantes:</strong> <span>JESUS MANUEL ARDILA VANEGAS Y JUAN ESTEBAN OLIVEROS</span></p>
           <p><strong>Periodo de recolección:</strong> <span id="informe-periodo">Sin registros</span></p>
           <p><strong>Total de registros (n):</strong> <span id="informe-n">0</span></p>
+          <p><strong>Origen de los datos:</strong> <span id="informe-origen">Se realizó con el respectivo encargado.</span></p>
         </div>
       </header>
       <section class="informe-seccion">
         <h2>1. Ficha técnica</h2>
         <dl class="informe-ficha">
-          <dt>Objetivo</dt><dd>Analizar los tiempos de verificación y el flujo de acceso en la portería de UNIPAZ para identificar franjas horarias pico y evaluar la agilidad del proceso de ingreso.</dd>
+          <dt>Objetivo</dt><dd>Analizar el flujo de acceso en la portería de UNIPAZ para identificar las franjas horarias de mayor ingreso y describir las características de las personas que ingresan.</dd>
           <dt>Población</dt><dd>Usuarios que ingresan por la portería principal de UNIPAZ (estudiantes, docentes, administrativos y visitantes).</dd>
-          <dt>Tipo de muestreo</dt><dd>Muestreo sistemático (o el tipo de muestreo que hayan definido en su grupo).</dd>
-          <dt>Muestra (n)</dt><dd id="informe-muestra">0 observaciones registradas en la app.</dd>
-          <dt>Variables</dt><dd><ul><li>Tiempo de verificación (s): cuantitativa.</li><li>Tipo de persona: cualitativa.</li><li>Medio de ingreso: cualitativa.</li><li>Presenta carné: cualitativa.</li><li>Franja horaria: cualitativa calculada.</li></ul></dd>
+          <dt>Tipo de muestreo</dt><dd id="informe-muestreo">Muestreo por conveniencia no probabilístico.</dd>
+          <dt>Muestra (n)</dt><dd id="informe-muestra">0 observaciones disponibles.</dd>
+          <dt>Variables</dt><dd><ul><li>Tipo de persona: cualitativa.</li><li>Medio de ingreso: cualitativa.</li><li>Presenta carné: cualitativa.</li><li>Franja horaria: cualitativa calculada.</li></ul></dd>
         </dl>
       </section>
       <section class="informe-seccion">
@@ -1453,7 +1576,7 @@
   /* ================== Configuración ================== */
   var OPCIONES = {
     tipo:  ['Estudiante', 'Docente', 'Administrativo', 'Visitante'],
-    medio: ['A pie', 'Motocicleta', 'Automóvil', 'Bicicleta'],
+    medio: ['Motocicleta', 'Automóvil'],
     carne: ['Sí', 'No']
   };
 
@@ -1467,11 +1590,10 @@
 
   var EMOJI = {
     tipo:  { 'Estudiante': '🎓', 'Docente': '🧑🏫', 'Administrativo': '💼', 'Visitante': '🧳' },
-    medio: { 'A pie': '🚶', 'Motocicleta': '🏍️', 'Automóvil': '🚗', 'Bicicleta': '🚲' },
+    medio: { 'Motocicleta': '🏍️', 'Automóvil': '🚗' },
     carne: { 'Sí': '✅', 'No': '❌' }
   };
   var MARCADOR = { tipo: '👤', medio: '🚪', carne: '🪪' };
-  var ICONOS_AVISO = { exito: '✓', advertencia: '!', info: 'i' };
 
   var CLAVES = ['fecha', 'hora', 'tipo', 'medio', 'carne'];
   var LIMITE_INICIAL = 12;
@@ -1529,6 +1651,7 @@
 
   /* ================== Estado ================== */
   var registros = [];
+  var esConjuntoDemostrativo = false;
   var idsConocidos = {};
   var flashIds = {};
   var inicializado = false;
@@ -1581,7 +1704,6 @@
     void btnTema.offsetWidth;
     btnTema.classList.add('girar');
     actualizarIconoTema();
-    actualizarBotonesDeGraficos();
   });
   if (window.matchMedia) {
     var mq = window.matchMedia('(prefers-color-scheme: dark)');
@@ -1760,7 +1882,198 @@
     if (valor) { sincronizarCamposConAhora(); }
   }
 
+  /* ================== Desplegables animados ================== */
+  var desplegables = [];
+  var desplegableAbierto = null;
+
+  function refrescarDesplegables() {
+    desplegables.forEach(function (d) { d.pintar(); });
+  }
+
+  function cerrarDesplegableAbierto(excepto) {
+    if (desplegableAbierto && desplegableAbierto !== excepto) {
+      desplegableAbierto.cerrar(true);
+    }
+  }
+
+  function crearDesplegable(select) {
+    if (select._disp) { return; }
+
+    var wrap = crear('div', 'sel-wrap');
+    if (select.closest('.filtros')) { wrap.classList.add('en-filtros'); }
+
+    var disp = crear('button', 'sel-disp');
+    disp.type = 'button';
+    disp.id = (select.id || 'sel' + desplegables.length) + '-disp';
+    disp.setAttribute('aria-haspopup', 'listbox');
+    disp.setAttribute('aria-expanded', 'false');
+
+    var texto = crear('span', 'sel-texto');
+    disp.appendChild(texto);
+
+    select.parentNode.insertBefore(wrap, select);
+    wrap.appendChild(disp);
+    wrap.appendChild(select);
+    select.classList.add('sel-oculto');
+    select.tabIndex = -1;
+    select.setAttribute('aria-hidden', 'true');
+    select._disp = disp;
+
+    if (select.id) {
+      document.querySelectorAll('label[for="' + select.id + '"]').forEach(function (l) {
+        l.htmlFor = disp.id;
+      });
+    }
+
+    var lista = null;
+    var foco = -1;
+
+    function pintar() {
+      var op = select.options[select.selectedIndex];
+      texto.textContent = op ? op.textContent : '';
+      texto.classList.toggle('sel-vacio', !select.value);
+      disp.classList.toggle('invalido', select.classList.contains('invalido'));
+      disp.disabled = select.disabled;
+    }
+
+    function marcarFoco(i) {
+      if (!lista) { return; }
+      foco = i;
+      Array.prototype.forEach.call(lista.children, function (li, k) {
+        li.classList.toggle('foco', k === i);
+      });
+    }
+
+    function moverFoco(delta) {
+      var n = select.options.length;
+      if (!n) { return; }
+      var i = foco;
+      for (var s = 0; s < n; s++) {
+        i = (i + delta + n) % n;
+        if (!select.options[i].disabled) { marcarFoco(i); return; }
+      }
+    }
+
+    function cerrar(animado) {
+      if (!lista) { return; }
+      var l = lista;
+      lista = null;
+      foco = -1;
+      wrap.classList.remove('abierto');
+      disp.setAttribute('aria-expanded', 'false');
+      if (desplegableAbierto === d) { desplegableAbierto = null; }
+      if (REDUCIR || !animado) { l.remove(); return; }
+      l.classList.add('cerrando');
+      var quitar = function () { if (l.parentNode) { l.parentNode.removeChild(l); } };
+      l.addEventListener('animationend', function (ev) {
+        if (ev.target === l) { quitar(); }
+      });
+      setTimeout(quitar, 260);
+    }
+
+    function elegir(i) {
+      var op = select.options[i];
+      if (!op || op.disabled) { return; }
+      var cambio = select.selectedIndex !== i;
+      select.selectedIndex = i;
+      cerrar(true);
+      pintar();
+      disp.focus({ preventScroll: true });
+      if (cambio) { select.dispatchEvent(new Event('change', { bubbles: true })); }
+      disp.classList.remove('animar-seleccion');
+      void disp.offsetWidth;
+      disp.classList.add('animar-seleccion');
+    }
+
+    function abrir() {
+      if (lista || select.options.length === 0 || select.disabled) { return; }
+      cerrarDesplegableAbierto(d);
+
+      lista = crear('ul', 'sel-lista');
+      lista.setAttribute('role', 'listbox');
+      lista.id = disp.id + '-lista';
+
+      Array.prototype.forEach.call(select.options, function (op, i) {
+        var li = crear('li', 'sel-op' + (op.disabled ? ' deshabilitada' : ''));
+        li.setAttribute('role', 'option');
+        li.setAttribute('aria-selected', i === select.selectedIndex ? 'true' : 'false');
+        li.style.setProperty('--i', i);
+        if (i === select.selectedIndex) { li.classList.add('seleccionada'); }
+
+        li.appendChild(crear('span', '', op.textContent));
+        li.appendChild(crear('span', 'sel-check', '✓'));
+
+        li.addEventListener('mousedown', function (e) { e.preventDefault(); });
+        li.addEventListener('mouseenter', function () { if (!op.disabled) { marcarFoco(i); } });
+        li.addEventListener('click', function () { elegir(i); });
+        lista.appendChild(li);
+      });
+
+      wrap.appendChild(lista);
+      wrap.classList.add('abierto');
+      disp.setAttribute('aria-expanded', 'true');
+      desplegableAbierto = d;
+
+      var r = disp.getBoundingClientRect();
+      var alto = Math.min(select.options.length * 46 + 20, 320);
+      var espacioAbajo = window.innerHeight - r.bottom;
+      wrap.classList.toggle('arriba', espacioAbajo < alto && r.top > espacioAbajo);
+
+      marcarFoco(select.selectedIndex >= 0 ? select.selectedIndex : 0);
+    }
+
+    disp.addEventListener('click', function () {
+      if (lista) { cerrar(true); } else { abrir(); }
+    });
+
+    disp.addEventListener('keydown', function (e) {
+      var k = e.key;
+      if (!lista) {
+        if (k === 'ArrowDown' || k === 'ArrowUp' || k === 'Enter' || k === ' ') {
+          e.preventDefault();
+          abrir();
+        }
+        return;
+      }
+      if (k === 'ArrowDown') { e.preventDefault(); moverFoco(1); }
+      else if (k === 'ArrowUp') { e.preventDefault(); moverFoco(-1); }
+      else if (k === 'Enter' || k === ' ') { e.preventDefault(); if (foco >= 0) { elegir(foco); } }
+      else if (k === 'Escape') { e.preventDefault(); cerrar(true); }
+      else if (k === 'Tab') { cerrar(true); }
+    });
+
+    select.addEventListener('change', pintar);
+    new MutationObserver(pintar).observe(select, { childList: true });
+
+    var d = {
+      wrap: wrap,
+      pintar: pintar,
+      cerrar: cerrar
+    };
+    desplegables.push(d);
+    pintar();
+  }
+
+  function crearTodosLosDesplegables() {
+    document.querySelectorAll('select').forEach(crearDesplegable);
+  }
+
+  document.addEventListener('pointerdown', function (e) {
+    if (desplegableAbierto && !desplegableAbierto.wrap.contains(e.target)) {
+      desplegableAbierto.cerrar(true);
+    }
+  }, true);
+
+  window.addEventListener('resize', function () {
+    if (desplegableAbierto) { desplegableAbierto.cerrar(false); }
+  });
+
   /* ================== Formulario ================== */
+  function enfocarCampo(clave) {
+    var c = campos[clave];
+    (c._disp || c).focus();
+  }
+
   function llenarSelect(select, clave) {
     var vacia = document.createElement('option');
     vacia.value = '';
@@ -1775,15 +2088,18 @@
   }
 
   function marcarCampo(clave, invalido) {
-    campos[clave].classList.toggle('invalido', invalido);
-    campos[clave].setAttribute('aria-invalid', invalido ? 'true' : 'false');
+    var c = campos[clave];
+    c.classList.toggle('invalido', invalido);
+    c.setAttribute('aria-invalid', invalido ? 'true' : 'false');
+    if (c._disp) { c._disp.classList.toggle('invalido', invalido); }
   }
 
   function sacudirCampo(clave) {
     var c = campos[clave];
-    c.classList.remove('sacudir');
-    void c.offsetWidth;
-    c.classList.add('sacudir');
+    var objetivo = c._disp || c;
+    objetivo.classList.remove('sacudir');
+    void objetivo.offsetWidth;
+    objetivo.classList.add('sacudir');
   }
 
   function limpiarFormulario() {
@@ -1846,6 +2162,8 @@
     ponerEmoji($('pv-emoji-tipo'), 'tipo');
     ponerEmoji($('pv-emoji-medio'), 'medio');
     ponerEmoji($('pv-emoji-carne'), 'carne');
+
+    refrescarDesplegables();
   }
 
   function validarFormulario() {
@@ -1860,7 +2178,7 @@
     if (faltantes.length > 0) {
       var lista = faltantes.map(function (k) { return ETIQUETAS[k]; }).join(', ');
       mostrarAviso('Faltan campos por completar: ' + lista + '.', 'advertencia');
-      campos[faltantes[0]].focus();
+      enfocarCampo(faltantes[0]);
       return null;
     }
 
@@ -1891,12 +2209,12 @@
     llamarServidor('guardarRegistro', [nuevo])
       .then(function (resp) {
         guardadoOk = true;
-        aplicarDatos(resp.registros);
+        aplicarDatos(resp.registros, resp.esDemostracion);
         ultimaSync = Date.now();
         setSync('ok');
         limpiarFormulario();
         mostrarAviso('Registro N.° ' + resp.numero + ' guardado correctamente.', 'exito');
-        campos.tipo.focus();
+        enfocarCampo('tipo');
       })
       .catch(function (err) {
         mostrarAviso('No se pudo guardar el registro: ' + mensajeError(err), 'advertencia');
@@ -1984,7 +2302,7 @@
       iniciarEscritura();
       llamarServidor('eliminarRegistro', [r.id])
         .then(function (resp) {
-          aplicarDatos(resp.registros);
+          aplicarDatos(resp.registros, resp.esDemostracion);
           ultimaSync = Date.now();
           setSync('ok');
           mostrarAviso('Registro N.° ' + n + ' eliminado.', 'info');
@@ -2199,8 +2517,6 @@
     construirColumnas();
   }
 
-  function actualizarBotonesDeGraficos() { /* los colores se resuelven con CSS; nada que recalcular */ }
-
   function renderGraficos() {
     var total = registros.length;
 
@@ -2291,7 +2607,6 @@
 
   /* ================== Análisis estadístico ================== */
   var VARIABLE_ANALISIS = {
-    tiempo: { nombre: 'Tiempo de verificación (s)', tipo: 'cuantitativa' },
     tipo: { nombre: 'Tipo de persona', tipo: 'cualitativa' },
     medio: { nombre: 'Medio de ingreso', tipo: 'cualitativa' },
     carne: { nombre: 'Presenta carné', tipo: 'cualitativa' },
@@ -2315,22 +2630,6 @@
   function valorVariableRegistro(registro, clave) {
     if (clave === 'franja') { return franjaHoraria(registro.hora); }
     return registro[clave] === undefined || registro[clave] === null ? '' : String(registro[clave]);
-  }
-
-  function obtenerTiempoVerificacion(registro) {
-    var claves = [
-      'tiempoVerificacion', 'tiempo_verificacion', 'tiempo_verificacion_s',
-      'tiempoVerificacionSegundos', 'tiempo_verificacion_segundos',
-      'duracionVerificacion', 'duracion_verificacion', 'tiempo'
-    ];
-    for (var i = 0; i < claves.length; i++) {
-      var v = registro[claves[i]];
-      if (v !== undefined && v !== null && v !== '') {
-        var n = typeof v === 'number' ? v : Number(String(v).replace(',', '.'));
-        if (isFinite(n)) { return n; }
-      }
-    }
-    return null;
   }
 
   function registrosParaAnalisis() {
@@ -2364,127 +2663,6 @@
     td.textContent = mensaje;
     tr.appendChild(td);
     tbody.appendChild(tr);
-  }
-
-  function ordenarNumeros(a, b) { return a - b; }
-
-  function cuartilInc(ordenados, p) {
-    if (!ordenados.length) { return null; }
-    var posicion = (ordenados.length - 1) * p;
-    var inferior = Math.floor(posicion);
-    var superior = Math.ceil(posicion);
-    if (inferior === superior) { return ordenados[inferior]; }
-    return ordenados[inferior] +
-      (ordenados[superior] - ordenados[inferior]) * (posicion - inferior);
-  }
-
-  function decimalesDatos(valores) {
-    var max = 0;
-    valores.forEach(function (v) {
-      var texto = String(v);
-      var parte = texto.indexOf('.') >= 0 ? texto.split('.')[1] : '';
-      max = Math.max(max, parte.length);
-    });
-    return Math.min(max, 8);
-  }
-
-  function renderEstadisticosCuantitativos(valores) {
-    var cuerpo = $('analisis-cuerpo-estadisticos');
-    var cabecera = $('analisis-cabecera-frecuencias');
-    var cuerpoF = $('analisis-cuerpo-frecuencias');
-    cuerpo.textContent = '';
-    cabecera.textContent = '';
-    cuerpoF.textContent = '';
-
-    if (!valores.length) {
-      filaVaciaAnalisis(cuerpo, 3, 'No hay datos numéricos de tiempo de verificación en los registros disponibles.');
-      $('analisis-nota-frecuencias').textContent = 'No es posible construir intervalos sin datos cuantitativos.';
-      filaVaciaAnalisis(cuerpoF, 8, 'No hay datos cuantitativos para agrupar.');
-      return;
-    }
-
-    var datos = valores.slice().sort(ordenarNumeros);
-    var n = datos.length;
-    var suma = datos.reduce(function (a, b) { return a + b; }, 0);
-    var media = suma / n;
-    var mediana = cuartilInc(datos, 0.5);
-    var frecuencias = {};
-    datos.forEach(function (v) {
-      var k = String(v);
-      frecuencias[k] = (frecuencias[k] || 0) + 1;
-    });
-    var maxFrecuencia = 0;
-    Object.keys(frecuencias).forEach(function (k) {
-      maxFrecuencia = Math.max(maxFrecuencia, frecuencias[k]);
-    });
-    var modas = maxFrecuencia > 1 ? Object.keys(frecuencias)
-      .filter(function (k) { return frecuencias[k] === maxFrecuencia; })
-      .map(Number).sort(ordenarNumeros) : [];
-    var minimo = datos[0];
-    var maximo = datos[n - 1];
-    var rango = maximo - minimo;
-    var sumaCuadrados = datos.reduce(function (a, v) {
-      return a + Math.pow(v - media, 2);
-    }, 0);
-    var varianza = n > 1 ? sumaCuadrados / (n - 1) : null;
-    var desviacion = varianza === null ? null : Math.sqrt(varianza);
-    var cv = desviacion !== null && media !== 0 ? desviacion / Math.abs(media) * 100 : null;
-    var q1 = cuartilInc(datos, 0.25);
-    var q2 = cuartilInc(datos, 0.5);
-    var q3 = cuartilInc(datos, 0.75);
-    var ric = q3 - q1;
-    var dec = decimalesDatos(valores);
-    var filas = [
-      ['n', 'Cantidad de observaciones', numeroCO(n, 0)],
-      ['Suma', 'Σ xi', numeroCO(suma)],
-      ['Media', 'Σ xi ÷ n', numeroCO(media)],
-      ['Mediana', 'CUARTIL.INC(datos; 0,5)', numeroCO(mediana)],
-      ['Moda', 'Valor(es) con mayor frecuencia', modas.length ? modas.map(function (v) { return numeroCO(v); }).join('; ') : 'No hay moda'],
-      ['Mínimo', 'Menor valor observado', numeroCO(minimo)],
-      ['Máximo', 'Mayor valor observado', numeroCO(maximo)],
-      ['Rango', 'Máximo − mínimo', numeroCO(rango)],
-      ['Varianza muestral (s²)', 'Σ (xi − x̄)² ÷ (n − 1)', varianza === null ? 'No definida para n < 2' : numeroCO(varianza)],
-      ['Desviación estándar muestral (s)', '√ varianza muestral', desviacion === null ? 'No definida para n < 2' : numeroCO(desviacion)],
-      ['Coeficiente de variación', '(s ÷ |x̄|) × 100', cv === null ? 'No definido' : numeroCO(cv) + ' %'],
-      ['Q1', 'CUARTIL.INC(datos; 0,25)', numeroCO(q1)],
-      ['Q2', 'CUARTIL.INC(datos; 0,5)', numeroCO(q2)],
-      ['Q3', 'CUARTIL.INC(datos; 0,75)', numeroCO(q3)],
-      ['RIC', 'Q3 − Q1', numeroCO(ric)]
-    ];
-    filas.forEach(function (f) { agregarFilaAnalisis(cuerpo, f, ['', 'analisis-formula', 'numero']); });
-
-    var k = Math.max(1, Math.round(1 + 3.322 * Math.log(n) / Math.LN10));
-    var amplitudSinRedondear = rango / k;
-    var factor = Math.pow(10, dec);
-    var amplitud = Math.ceil(amplitudSinRedondear * factor - 1e-10) / factor;
-    if (amplitud <= 0) { amplitud = 1 / factor; }
-    var trHead = document.createElement('tr');
-    ['Clase', 'Li', 'Ls', 'Marca de clase xi', 'fi', 'Fi', 'hi', 'Hi (%)'].forEach(function (t) {
-      var el = document.createElement('th'); el.textContent = t; trHead.appendChild(el);
-    });
-    cabecera.appendChild(trHead);
-    var acumulada = 0;
-    for (var c = 0; c < k; c++) {
-      var li = minimo + c * amplitud;
-      var ls = minimo + (c + 1) * amplitud;
-      var fi = datos.filter(function (v) {
-        return v >= li - 1e-10 && (c === k - 1 ? v <= ls + 1e-10 : v < ls - 1e-10);
-      }).length;
-      acumulada += fi;
-      var hi = fi / n;
-      var Hi = acumulada / n * 100;
-      agregarFilaAnalisis(cuerpoF, [
-        String(c + 1), numeroCO(li, dec), numeroCO(ls, dec),
-        numeroCO((li + ls) / 2, dec + 1), numeroCO(fi, 0),
-        numeroCO(acumulada, 0), numeroCO(hi),
-        numeroCO(Hi) + ' %'
-      ]);
-    }
-    $('analisis-nota-frecuencias').textContent =
-      'Sturges: k = 1 + 3,322 · log10(n) = ' + numeroCO(1 + 3.322 * Math.log(n) / Math.LN10) +
-      ' → ' + k + ' clases. Amplitud A = rango ÷ k, redondeada hacia arriba a ' +
-      dec + ' decimales: ' + numeroCO(amplitud, dec) +
-      '. Los intervalos son [Li, Ls); la última clase incluye también su límite superior.';
   }
 
   function renderFrecuenciasCualitativas(lista, clave) {
@@ -2562,80 +2740,32 @@
     $(id).innerHTML = '<p class="analisis-vacio">' + escaparSVG(mensaje) + '</p>';
   }
 
-  function renderGraficosCuantitativos(valores) {
-    $('analisis-graficos-cuantitativos').hidden = false;
-    $('analisis-graficos-cualitativos').hidden = true;
-    if (!valores.length) {
-      mostrarGraficoVacio('analisis-histograma', 'No hay datos cuantitativos para graficar.');
-      mostrarGraficoVacio('analisis-caja', 'No hay datos cuantitativos para graficar.');
-      $('analisis-lectura-texto').textContent = 'No es posible generar una lectura cuantitativa porque no hay tiempos de verificación numéricos disponibles.';
+  function renderGraficosCualitativos(lista, clave) {
+    var conteo = {};
+    lista.forEach(function (r) {
+      var v = valorVariableRegistro(r, clave) || 'Sin dato';
+      conteo[v] = (conteo[v] || 0) + 1;
+    });
+    var cats = Object.keys(conteo).sort(function (a, b) { return a.localeCompare(b, 'es'); });
+    var n = lista.length;
+    if (!n || !cats.length) {
+      mostrarGraficoVacio('analisis-barras', 'No hay registros para graficar.');
+      $('analisis-lectura-texto').textContent = 'No hay datos cualitativos para generar una lectura automática.';
       return;
     }
-    var d = valores.slice().sort(ordenarNumeros), n = d.length;
-    var media = d.reduce(function(a,b){return a+b;},0)/n;
-    var mediana = cuartilInc(d,.5), q1 = cuartilInc(d,.25), q3 = cuartilInc(d,.75);
-    var min = d[0], max = d[n-1], rango = max-min;
-    var varianza = n > 1 ? d.reduce(function(a,v){return a+Math.pow(v-media,2);},0)/(n-1) : null;
-    var sd = varianza === null ? null : Math.sqrt(varianza);
-    var cv = sd !== null && media !== 0 ? sd/Math.abs(media)*100 : null;
-    var k = Math.max(1, Math.round(1+3.322*Math.log(n)/Math.LN10));
-    var dec = decimalesDatos(d), factor = Math.pow(10,dec);
-    var amp = rango === 0 ? 1/factor : Math.ceil((rango/k)*factor-1e-10)/factor;
-    var bins = [];
-    for (var i=0;i<k;i++) {
-      var li=min+i*amp, ls=min+(i+1)*amp;
-      var fi=d.filter(function(v){return v>=li-1e-10 && (i===k-1 ? v<=ls+1e-10 : v<ls-1e-10);}).length;
-      bins.push({li:li,ls:ls,xi:(li+ls)/2,fi:fi});
-    }
-    var W=760,H=330,L=66,R=24,T=22,B=58, pw=W-L-R, ph=H-T-B;
-    var maxF=Math.max(1,Math.max.apply(null,bins.map(function(b){return b.fi;})));
-    var barW=pw/k;
-    var y=function(v){return T+ph-v/maxF*ph;};
-    var svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Histograma con polígono de frecuencias">';
-    for(var gy=0;gy<=4;gy++){var val=maxF*gy/4, yy=y(val);svg+='<line class="sv-grid" x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'"/><text class="sv-txt" x="'+(L-10)+'" y="'+(yy+4)+'" text-anchor="end" font-size="11">'+escaparSVG(numeroCO(val,1))+'</text>';}
-    bins.forEach(function(b,i){var bx=L+i*barW+1, bh=ph*b.fi/maxF;svg+='<rect class="sv-bar" x="'+bx+'" y="'+(T+ph-bh)+'" width="'+Math.max(1,barW-2)+'" height="'+bh+'"/><text class="sv-txt-fuerte" x="'+(bx+(barW-2)/2)+'" y="'+(T+ph-bh-6)+'" text-anchor="middle" font-size="11">'+b.fi+'</text>';});
-    var puntos=bins.map(function(b,i){return (L+(i+.5)*barW)+','+y(b.fi);}).join(' ');
-    svg+='<polyline class="sv-line" points="'+puntos+'" fill="none" stroke-width="2.5" stroke-linejoin="round"/>';
-    bins.forEach(function(b,i){var px=L+(i+.5)*barW,py=y(b.fi);svg+='<circle class="sv-dot" cx="'+px+'" cy="'+py+'" r="3.5"/><text class="sv-txt" x="'+px+'" y="'+(H-34)+'" text-anchor="middle" font-size="10">'+escaparSVG(numeroCO(b.xi,dec+1))+'</text>';});
-    svg+='<line class="sv-axis" x1="'+L+'" y1="'+(T+ph)+'" x2="'+(W-R)+'" y2="'+(T+ph)+'"/><text class="sv-txt" x="'+(L+pw/2)+'" y="'+(H-8)+'" text-anchor="middle" font-size="12">Tiempo de verificación (s) · marca de clase</text><text class="sv-txt" transform="translate(17 '+(T+ph/2)+') rotate(-90)" text-anchor="middle" font-size="12">Frecuencia (fi)</text></svg>';
-    $('analisis-histograma').innerHTML=svg;
-
-    var BW=760,BH=190, left=70,right=30, mid=85, scaleW=BW-left-right;
-    var domainMin=Math.min(min,media), domainMax=Math.max(max,media); if(domainMax===domainMin){domainMin-=1;domainMax+=1;}
-    var xx=function(v){return left+(v-domainMin)/(domainMax-domainMin)*scaleW;};
-    var box='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+BW+' '+BH+'" role="img" aria-label="Diagrama de caja y bigotes">';
-    box+='<line class="sv-bigote" x1="'+xx(min)+'" y1="'+mid+'" x2="'+xx(max)+'" y2="'+mid+'" stroke-width="1.5"/><line class="sv-bigote" x1="'+xx(min)+'" y1="'+(mid-16)+'" x2="'+xx(min)+'" y2="'+(mid+16)+'" stroke-width="1.5"/><line class="sv-bigote" x1="'+xx(max)+'" y1="'+(mid-16)+'" x2="'+xx(max)+'" y2="'+(mid+16)+'" stroke-width="1.5"/><rect class="sv-caja" x="'+xx(q1)+'" y="'+(mid-25)+'" width="'+Math.max(1,xx(q3)-xx(q1))+'" height="50" rx="3" stroke-width="1.5"/><line class="sv-mediana" x1="'+xx(mediana)+'" y1="'+(mid-25)+'" x2="'+xx(mediana)+'" y2="'+(mid+25)+'" stroke-width="2.5"/><path class="sv-media" d="M '+xx(media)+' '+(mid-8)+' L '+(xx(media)+8)+' '+mid+' L '+xx(media)+' '+(mid+8)+' L '+(xx(media)-8)+' '+mid+' Z" stroke-width="1.5"/>';
-    var puntosCaja=[['Mínimo',min],['Q1',q1],['Mediana',mediana],['Q3',q3],['Máximo',max],['Media',media]];
-    puntosCaja.forEach(function(p,i){var px=xx(p[1]), yy=i%2===0?mid+48:mid-43;box+='<text class="sv-txt" x="'+px+'" y="'+yy+'" text-anchor="middle" font-size="11">'+escaparSVG(p[0])+'</text><text class="sv-txt-fuerte" x="'+px+'" y="'+(i%2===0?mid+64:mid-57)+'" text-anchor="middle" font-size="11">'+escaparSVG(numeroCO(p[1]))+'</text>';});
-    box+='<text class="sv-txt" x="'+(BW/2)+'" y="'+(BH-8)+'" text-anchor="middle" font-size="12">Tiempo de verificación (s)</text></svg>';
-    $('analisis-caja').innerHTML=box;
-    var lectura;
-    if(Math.abs(media-mediana)<1e-9) lectura='La distribución es aproximadamente simétrica porque la media y la mediana son iguales o muy cercanas.';
-    else if(media>mediana) lectura='La distribución presenta sesgo positivo porque la media es mayor que la mediana.';
-    else lectura='La distribución presenta sesgo negativo porque la media es menor que la mediana.';
-    if(cv===null) lectura+=' No se puede clasificar la homogeneidad mediante el CV.';
-    else if(cv<15) lectura+=' Los datos son homogéneos (CV = '+numeroCO(cv)+' %; menor de 15 %).';
-    else if(cv<30) lectura+=' Los datos presentan variabilidad moderada (CV = '+numeroCO(cv)+' %; entre 15 % y menos de 30 %).';
-    else lectura+=' Los datos son muy dispersos (CV = '+numeroCO(cv)+' %; 30 % o más).';
-    $('analisis-lectura-texto').textContent=lectura;
-  }
-
-  function renderGraficosCualitativos(lista, clave) {
-    $('analisis-graficos-cuantitativos').hidden=true;
-    $('analisis-graficos-cualitativos').hidden=false;
-    var conteo={};
-    lista.forEach(function(r){var v=valorVariableRegistro(r,clave)||'Sin dato';conteo[v]=(conteo[v]||0)+1;});
-    var cats=Object.keys(conteo).sort(function(a,b){return a.localeCompare(b,'es');});
-    var n=lista.length;
-    if(!n||!cats.length){mostrarGraficoVacio('analisis-barras','No hay registros para graficar.');$('analisis-lectura-texto').textContent='No hay datos cualitativos para generar una lectura automática.';return;}
-    var max=Math.max.apply(null,cats.map(function(c){return conteo[c];}));
-    var W=760,row=42,H=Math.max(150,50+cats.length*row),L=190,R=80,barMax=W-L-R;
-    var svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Diagrama de barras horizontales por categoría">';
-    cats.forEach(function(c,i){var y=30+i*row,fi=conteo[c],pct=fi/n*100,w=fi/max*barMax;svg+='<text class="sv-txt" x="'+(L-12)+'" y="'+(y+17)+'" text-anchor="end" font-size="12">'+escaparSVG(c)+'</text><rect class="sv-barra-h" x="'+L+'" y="'+y+'" width="'+w+'" height="24" rx="4"/><text class="sv-txt-fuerte" x="'+(L+w+8)+'" y="'+(y+17)+'" font-size="12">'+fi+' · '+escaparSVG(numeroCO(pct,1))+' %</text>';});
-    svg+='<text class="sv-txt" x="'+(L+barMax/2)+'" y="'+(H-5)+'" text-anchor="middle" font-size="12">Frecuencia (fi) · longitud proporcional</text></svg>';
-    $('analisis-barras').innerHTML=svg;
-    var top=cats.reduce(function(a,c){return conteo[c]>conteo[a]?c:a;},cats[0]);
-    $('analisis-lectura-texto').textContent='La categoría más frecuente es «'+top+'», con '+conteo[top]+' de '+n+' registros ('+numeroCO(conteo[top]/n*100,1)+' %).';
+    var max = Math.max.apply(null, cats.map(function (c) { return conteo[c]; }));
+    var W = 760, row = 42, H = Math.max(150, 50 + cats.length * row), L = 190, R = 80, barMax = W - L - R;
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Diagrama de barras horizontales por categoría">';
+    cats.forEach(function (c, i) {
+      var y = 30 + i * row, fi = conteo[c], pct = fi / n * 100, w = fi / max * barMax;
+      svg += '<text class="sv-txt" x="' + (L - 12) + '" y="' + (y + 17) + '" text-anchor="end" font-size="12">' + escaparSVG(c) + '</text>' +
+             '<rect class="sv-barra-h" x="' + L + '" y="' + y + '" width="' + w + '" height="24" rx="4"/>' +
+             '<text class="sv-txt-fuerte" x="' + (L + w + 8) + '" y="' + (y + 17) + '" font-size="12">' + fi + ' · ' + escaparSVG(numeroCO(pct, 1)) + ' %</text>';
+    });
+    svg += '<text class="sv-txt" x="' + (L + barMax / 2) + '" y="' + (H - 5) + '" text-anchor="middle" font-size="12">Frecuencia (fi) · longitud proporcional</text></svg>';
+    $('analisis-barras').innerHTML = svg;
+    var top = cats.reduce(function (a, c) { return conteo[c] > conteo[a] ? c : a; }, cats[0]);
+    $('analisis-lectura-texto').textContent = 'La categoría más frecuente es «' + top + '», con ' + conteo[top] + ' de ' + n + ' registros (' + numeroCO(conteo[top] / n * 100, 1) + ' %).';
   }
 
   function renderAnalisis() {
@@ -2649,105 +2779,94 @@
     var mensaje = $('analisis-mensaje');
     mensaje.className = 'info-tabla';
     mensaje.textContent = '';
-
-    if (VARIABLE_ANALISIS[clave].tipo === 'cuantitativa') {
-      var valores = lista.map(obtenerTiempoVerificacion).filter(function (v) { return v !== null; });
-      renderEstadisticosCuantitativos(valores);
-      renderGraficosCuantitativos(valores);
-      if (!valores.length) {
-        mensaje.classList.add('error');
-        mensaje.textContent = 'La variable está disponible en el selector, pero los registros actuales no contienen un campo numérico de tiempo de verificación. Para calcularla, el servidor de Apps Script debe enviar ese dato en cada registro.';
-      } else if (valores.length < lista.length) {
-        mensaje.textContent = 'Se calcularon los estadísticos con ' + valores.length + ' valores numéricos; ' +
-          (lista.length - valores.length) + ' registros no tienen tiempo de verificación y fueron excluidos de los cálculos.';
-      }
-    } else {
-      $('analisis-cuerpo-estadisticos').textContent = '';
-      filaVaciaAnalisis($('analisis-cuerpo-estadisticos'), 3,
-        'La variable seleccionada es cualitativa; se presenta su distribución en la tabla de frecuencias.');
-      $('analisis-nota-frecuencias').textContent = 'Frecuencias absolutas, acumuladas y relativas de cada categoría.';
-      renderFrecuenciasCualitativas(lista, clave);
-      renderGraficosCualitativos(lista, clave);
-    }
+    $('analisis-cuerpo-estadisticos').textContent = '';
+    filaVaciaAnalisis($('analisis-cuerpo-estadisticos'), 3,
+      'La variable seleccionada es cualitativa; consulte su distribución en la tabla de frecuencias.');
+    $('analisis-nota-frecuencias').textContent = 'Frecuencias absolutas, acumuladas y relativas de cada categoría.';
+    renderFrecuenciasCualitativas(lista, clave);
+    renderGraficosCualitativos(lista, clave);
+    refrescarDesplegables();
   }
 
   /* ================== Informe ================== */
   function escaparInforme(v) {
-    return String(v === null || v === undefined ? '' : v).replace(/[&<>"']/g, function(c) {
-      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    return String(v === null || v === undefined ? '' : v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
   function fechaInforme(v) {
-    if (!v) return '';
+    if (!v) { return ''; }
     var s = String(v);
     var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-    return m ? m[3]+'/'+m[2]+'/'+m[1] : s;
+    return m ? m[3] + '/' + m[2] + '/' + m[1] : s;
   }
   function ordenarFechasInforme() {
-    return registros.map(function(r){return String(r.fecha || '').trim();}).filter(Boolean).sort();
+    return registros.map(function (r) { return String(r.fecha || '').trim(); }).filter(Boolean).sort();
   }
   function bloqueMedidaInforme(etiqueta, valor) {
-    return '<div class="informe-medida"><small>'+escaparInforme(etiqueta)+'</small><strong>'+escaparInforme(valor)+'</strong></div>';
+    return '<div class="informe-medida"><small>' + escaparInforme(etiqueta) + '</small><strong>' + escaparInforme(valor) + '</strong></div>';
   }
   function tablaInforme(encabezados, filas, total) {
-    var h='<table class="informe-tabla"><thead><tr>'+encabezados.map(function(x){return '<th>'+escaparInforme(x)+'</th>';}).join('')+'</tr></thead><tbody>';
-    h+=filas.map(function(f){return '<tr>'+f.map(function(x){return '<td>'+escaparInforme(x)+'</td>';}).join('')+'</tr>';}).join('');
-    h+='</tbody>';
-    if(total) h+='<tfoot><tr>'+total.map(function(x){return '<td>'+escaparInforme(x)+'</td>';}).join('')+'</tr></tfoot>';
-    return h+'</table>';
+    var h = '<table class="informe-tabla"><thead><tr>' + encabezados.map(function (x) { return '<th>' + escaparInforme(x) + '</th>'; }).join('') + '</tr></thead><tbody>';
+    h += filas.map(function (f) { return '<tr>' + f.map(function (x) { return '<td>' + escaparInforme(x) + '</td>'; }).join('') + '</tr>'; }).join('');
+    h += '</tbody>';
+    if (total) { h += '<tfoot><tr>' + total.map(function (x) { return '<td>' + escaparInforme(x) + '</td>'; }).join('') + '</tr></tfoot>'; }
+    return h + '</table>';
   }
   function renderVariableCualitativaInforme(clave, nombre) {
-    var conteo={}, n=0;
-    registros.forEach(function(r){var v=valorVariableRegistro(r,clave);if(v!==''&&v!==null){conteo[v]=(conteo[v]||0)+1;n++;}});
-    var cats=Object.keys(conteo).sort(function(a,b){return conteo[b]-conteo[a] || a.localeCompare(b,'es');});
-    var filas=cats.map(function(c,i){return [c,conteo[c],numeroCO(i===0?conteo[c]:cats.slice(0,i+1).reduce(function(a,k){return a+conteo[k];},0),0),numeroCO(conteo[c]/(n||1)*100,2)+' %'];});
-    var html='<section class="informe-variable"><h3>'+escaparInforme(nombre)+' · Cualitativa</h3>';
-    html+='<p><strong>Observaciones válidas:</strong> '+n+' · <strong>Sin dato:</strong> '+(registros.length-n)+'</p>';
-    html+=tablaInforme(['Categoría','Frecuencia (fi)','Frecuencia acumulada (Fi)','Frecuencia relativa'],filas,['Total',n,n,'100 %']);
-    if(cats.length){var max=conteo[cats[0]];html+='<div class="informe-barras">'+cats.map(function(c){return '<div class="informe-barra-fila"><span>'+escaparInforme(c)+'</span><div class="informe-barra-fondo"><div class="informe-barra" style="width:'+(conteo[c]/max*100)+'%"></div></div><strong>'+conteo[c]+' ('+numeroCO(conteo[c]/n*100,1)+'%)</strong></div>';}).join('')+'</div>';
-      html+='<p><strong>Moda:</strong> '+escaparInforme(cats.filter(function(c){return conteo[c]===max;}).join(', '))+' ('+max+' casos).</p>';
-    } else html+='<p>No hay datos disponibles para esta variable.</p>';
-    return html+'</section>';
-  }
-  function renderVariableCuantitativaInforme() {
-    var todos=registros.map(obtenerTiempoVerificacion), vals=todos.filter(function(v){return v!==null;}).sort(function(a,b){return a-b;});
-    var html='<section class="informe-variable"><h3>Tiempo de verificación (s) · Cuantitativa</h3><p><strong>Observaciones válidas:</strong> '+vals.length+' · <strong>Sin dato numérico:</strong> '+(registros.length-vals.length)+'</p>';
-    if(!vals.length) return html+'<p>No hay tiempos numéricos almacenados en los registros. Para obtener medidas y gráfico, el servidor de Apps Script debe enviar el tiempo de verificación como un campo numérico.</p></section>';
-    var n=vals.length, suma=vals.reduce(function(a,b){return a+b;},0), media=suma/n;
-    function mediana(a){var m=Math.floor(a.length/2);return a.length%2?a[m]:(a[m-1]+a[m])/2;}
-    var med=mediana(vals), min=vals[0], max=vals[n-1], varianza=vals.reduce(function(a,v){return a+Math.pow(v-media,2);},0)/n, desv=Math.sqrt(varianza), cv=media!==0?desv/Math.abs(media)*100:0;
-    var q1=n===1?vals[0]:mediana(vals.slice(0,Math.floor(n/2))), q3=n===1?vals[0]:mediana(vals.slice(Math.ceil(n/2)));
-    var modaConteo={}, modaMax=0; vals.forEach(function(v){var key=String(v);modaConteo[key]=(modaConteo[key]||0)+1;modaMax=Math.max(modaMax,modaConteo[key]);});
-    var moda=Object.keys(modaConteo).filter(function(v){return modaConteo[v]===modaMax;});
-    var modaTexto=modaMax>1?moda.map(function(v){return numeroCO(Number(v),2);}).join(', ')+' s':'Sin moda (todos los valores aparecen una sola vez)';
-    html+='<div class="informe-medidas">'+bloqueMedidaInforme('Media',numeroCO(media,2)+' s')+bloqueMedidaInforme('Mediana',numeroCO(med,2)+' s')+bloqueMedidaInforme('Moda',modaTexto)+bloqueMedidaInforme('Mínimo',numeroCO(min,2)+' s')+bloqueMedidaInforme('Máximo',numeroCO(max,2)+' s')+bloqueMedidaInforme('Rango',numeroCO(max-min,2)+' s')+bloqueMedidaInforme('Varianza poblacional',numeroCO(varianza,3)+' s²')+bloqueMedidaInforme('Desviación estándar',numeroCO(desv,3)+' s')+bloqueMedidaInforme('Coeficiente de variación',numeroCO(cv,2)+' %')+bloqueMedidaInforme('Q1 / Q3',numeroCO(q1,2)+' / '+numeroCO(q3,2)+' s')+'</div>';
-    var k=Math.ceil(1+3.322*Math.log10(n)); k=Math.max(1,k); var amplitud=(max-min)/k; if(amplitud===0) amplitud=1;
-    var bins=[];for(var i=0;i<k;i++){var lo=min+i*amplitud, hi=i===k-1?max:min+(i+1)*amplitud;bins.push({lo:lo,hi:hi,fi:0});}
-    vals.forEach(function(v){var ix=Math.min(k-1,Math.floor((v-min)/amplitud));bins[ix].fi++;});
-    html+='<p><strong>Distribución agrupada:</strong> '+k+' intervalos (criterio de Sturges).</p>';
-    html+=tablaInforme(['Intervalo (s)','Marca de clase','Frecuencia (fi)','Frecuencia relativa'],bins.map(function(b){return ['['+numeroCO(b.lo,2)+'; '+numeroCO(b.hi,2)+(b===bins[bins.length-1]?']':')'),numeroCO((b.lo+b.hi)/2,2),b.fi,numeroCO(b.fi/n*100,2)+' %'];}),['Total','—',n,'100 %']);
-    var maxFi=Math.max.apply(null,bins.map(function(b){return b.fi;}));
-    html+='<div class="informe-barras">'+bins.map(function(b){return '<div class="informe-barra-fila"><span>'+numeroCO(b.lo,1)+'–'+numeroCO(b.hi,1)+' s</span><div class="informe-barra-fondo"><div class="informe-barra" style="width:'+(maxFi?b.fi/maxFi*100:0)+'%"></div></div><strong>'+b.fi+'</strong></div>';}).join('')+'</div>';
-    return html+'</section>';
-  }
-  function renderInforme() {
-    if (!$('informe-resultados')) return;
-    var fechas=ordenarFechasInforme();
-    $('informe-n').textContent=registros.length;
-    $('informe-muestra').textContent=registros.length+' observaciones registradas en la app.';
-    $('informe-periodo').textContent=fechas.length?fechaInforme(fechas[0])+' al '+fechaInforme(fechas[fechas.length-1]):'Sin registros';
-    var html=renderVariableCuantitativaInforme();
-    ['tipo','medio','carne','franja'].forEach(function(k){html+=renderVariableCualitativaInforme(k,VARIABLE_ANALISIS[k].nombre);});
-    $('informe-resultados').innerHTML=html;
-  }
-  function iniciarCamposInforme() {
-    var camposInforme=['interpretacion','conclusiones','recomendaciones'];
-    camposInforme.forEach(function(k){
-      var el=$('informe-'+k), key='uniControl_informe_'+k;
-      try{el.value=localStorage.getItem(key)||'';}catch(e){}
-      el.addEventListener('input',function(){try{localStorage.setItem(key,el.value);$('informe-guardado').textContent='Guardado automáticamente en este navegador.';}catch(e){$('informe-guardado').textContent='No fue posible guardar: el almacenamiento local está bloqueado.';}});
+    var conteo = {}, n = 0;
+    registros.forEach(function (r) {
+      var v = valorVariableRegistro(r, clave);
+      if (v !== '' && v !== null) { conteo[v] = (conteo[v] || 0) + 1; n++; }
     });
-    $('btn-imprimir-informe').addEventListener('click',function(){renderInforme();window.print();});
+    var cats = Object.keys(conteo).sort(function (a, b) { return conteo[b] - conteo[a] || a.localeCompare(b, 'es'); });
+    var filas = cats.map(function (c, i) {
+      return [c, conteo[c], numeroCO(i === 0 ? conteo[c] : cats.slice(0, i + 1).reduce(function (a, k) { return a + conteo[k]; }, 0), 0), numeroCO(conteo[c] / (n || 1) * 100, 2) + ' %'];
+    });
+    var html = '<section class="informe-variable"><h3>' + escaparInforme(nombre) + ' · Cualitativa</h3>';
+    html += '<p><strong>Observaciones válidas:</strong> ' + n + ' · <strong>Sin dato:</strong> ' + (registros.length - n) + '</p>';
+    html += tablaInforme(['Categoría', 'Frecuencia (fi)', 'Frecuencia acumulada (Fi)', 'Frecuencia relativa'], filas, ['Total', n, n, '100 %']);
+    if (cats.length) {
+      var max = conteo[cats[0]];
+      html += '<div class="informe-barras">' + cats.map(function (c) {
+        return '<div class="informe-barra-fila"><span>' + escaparInforme(c) + '</span><div class="informe-barra-fondo"><div class="informe-barra" style="width:' + (conteo[c] / max * 100) + '%"></div></div><strong>' + conteo[c] + ' (' + numeroCO(conteo[c] / n * 100, 1) + '%)</strong></div>';
+      }).join('') + '</div>';
+      html += '<p><strong>Moda:</strong> ' + escaparInforme(cats.filter(function (c) { return conteo[c] === max; }).join(', ')) + ' (' + max + ' casos).</p>';
+    } else {
+      html += '<p>No hay datos disponibles para esta variable.</p>';
+    }
+    return html + '</section>';
+  }
+
+  function renderInforme() {
+    if (!$('informe-resultados')) { return; }
+    var fechas = ordenarFechasInforme();
+    $('informe-n').textContent = registros.length;
+    $('informe-muestra').textContent = registros.length + ' observaciones ' + (esConjuntoDemostrativo ? 'del conjunto de demostración.' : 'disponibles en la aplicación.');
+    $('informe-origen').textContent = 'Se realizó con el respectivo encargado.';
+    $('informe-muestreo').textContent = 'Muestreo por conveniencia no probabilístico.';
+    $('informe-periodo').textContent = fechas.length ? fechaInforme(fechas[0]) + ' al ' + fechaInforme(fechas[fechas.length - 1]) : 'Sin registros';
+    var html = '';
+    ['tipo', 'medio', 'carne', 'franja'].forEach(function (k) {
+      html += renderVariableCualitativaInforme(k, VARIABLE_ANALISIS[k].nombre);
+    });
+    $('informe-resultados').innerHTML = html;
+  }
+
+  function iniciarCamposInforme() {
+    ['interpretacion', 'conclusiones', 'recomendaciones'].forEach(function (k) {
+      var el = $('informe-' + k), key = 'uniControl_informe_' + k;
+      try { el.value = localStorage.getItem(key) || ''; } catch (e) { /* sin almacenamiento */ }
+      el.addEventListener('input', function () {
+        try {
+          localStorage.setItem(key, el.value);
+          $('informe-guardado').textContent = 'Guardado automáticamente en este navegador.';
+        } catch (e) {
+          $('informe-guardado').textContent = 'No fue posible guardar: el almacenamiento local está bloqueado.';
+        }
+      });
+    });
+    $('btn-imprimir-informe').addEventListener('click', function () { renderInforme(); window.print(); });
   }
 
   /* ================== Probabilidad ================== */
@@ -2760,8 +2879,7 @@
     Object.keys(VARIABLE_ANALISIS).forEach(function (clave) {
       var op = document.createElement('option');
       op.value = clave;
-      op.textContent = VARIABLE_ANALISIS[clave].nombre +
-        (VARIABLE_ANALISIS[clave].tipo === 'cuantitativa' ? ' · Cuantitativa' : ' · Cualitativa');
+      op.textContent = VARIABLE_ANALISIS[clave].nombre + ' · Cualitativa';
       a.appendChild(op);
     });
     a.value = VARIABLE_ANALISIS[anteriorA] ? anteriorA : 'tipo';
@@ -2777,20 +2895,21 @@
         var op = document.createElement('option');
         op.value = clave; op.textContent = NOMBRES_CUALITATIVAS[clave]; sel.appendChild(op);
       });
-      if (Array.prototype.some.call(sel.options, function (o) { return o.value === anterior; })) sel.value = anterior;
+      if (Array.prototype.some.call(sel.options, function (o) { return o.value === anterior; })) { sel.value = anterior; }
     });
     actualizarControlesEventoA();
     actualizarCategoriaProb('prob-a-categoria', a.value);
     actualizarCategoriaProb('prob-b-categoria', $('prob-b-variable').value);
     $('prob-b-categoria-campo').hidden = !$('prob-b-variable').value;
+    refrescarDesplegables();
   }
 
   function categoriasProb(clave) {
     var mapa = {};
-    if (!clave) return [];
+    if (!clave) { return []; }
     registros.forEach(function (r) {
       var valor = valorVariableRegistro(r, clave);
-      if (valor !== '') mapa[valor] = true;
+      if (valor !== '') { mapa[valor] = true; }
     });
     return Object.keys(mapa).sort(function (x, y) { return x.localeCompare(y, 'es'); });
   }
@@ -2802,15 +2921,13 @@
     cats.forEach(function (v) {
       var op = document.createElement('option'); op.value = v; op.textContent = v; sel.appendChild(op);
     });
-    if (cats.indexOf(anterior) >= 0) sel.value = anterior;
+    if (cats.indexOf(anterior) >= 0) { sel.value = anterior; }
+    refrescarDesplegables();
   }
 
   function actualizarControlesEventoA() {
-    var cuant = VARIABLE_ANALISIS[$('prob-a-variable').value].tipo === 'cuantitativa';
-    $('prob-a-operador-campo').hidden = !cuant;
-    $('prob-a-valor-campo').hidden = !cuant;
-    $('prob-a-categoria-campo').hidden = cuant;
-    if (!cuant) actualizarCategoriaProb('prob-a-categoria', $('prob-a-variable').value);
+    $('prob-a-categoria-campo').hidden = false;
+    actualizarCategoriaProb('prob-a-categoria', $('prob-a-variable').value);
   }
 
   function porcentajeProb(n, total) {
@@ -2829,22 +2946,12 @@
     var mensaje = $('prob-mensaje');
     mensaje.className = 'info-tabla';
     var claveA = $('prob-a-variable').value;
-    var esCuant = VARIABLE_ANALISIS[claveA].tipo === 'cuantitativa';
-    var umbral = Number($('prob-a-valor').value);
+    var categoriaA = $('prob-a-categoria').value;
     if (!registros.length) {
       mensaje.classList.add('error'); mensaje.textContent = 'No hay registros cargados para calcular probabilidades.';
       $('prob-resultados').hidden = true; return;
     }
-    if (esCuant && $('prob-a-valor').value.trim() === '') {
-      mensaje.classList.add('error'); mensaje.textContent = 'Escriba el valor numérico para definir el evento A.';
-      $('prob-resultados').hidden = true; return;
-    }
-    if (esCuant && !isFinite(umbral)) {
-      mensaje.classList.add('error'); mensaje.textContent = 'El valor de A debe ser numérico.';
-      $('prob-resultados').hidden = true; return;
-    }
-    var categoriaA = $('prob-a-categoria').value;
-    if (!esCuant && !categoriaA) {
+    if (!categoriaA) {
       mensaje.classList.add('error'); mensaje.textContent = 'Seleccione una categoría para el evento A.';
       $('prob-resultados').hidden = true; return;
     }
@@ -2854,32 +2961,19 @@
       mensaje.classList.add('error'); mensaje.textContent = 'Seleccione una categoría para el evento B.';
       $('prob-resultados').hidden = true; return;
     }
-
-    var muestra = esCuant ? registros.filter(function (r) { return obtenerTiempoVerificacion(r) !== null; }) : registros.slice();
-    var datosA = muestra.map(function (r) {
-      if (esCuant) {
-        var v = obtenerTiempoVerificacion(r);
-        return $('prob-a-operador').value === 'gt' ? v > umbral : v <= umbral;
-      }
-      return valorVariableRegistro(r, claveA) === categoriaA;
-    });
+    var muestra = registros.slice();
+    var datosA = muestra.map(function (r) { return valorVariableRegistro(r, claveA) === categoriaA; });
     var total = muestra.length;
-    if (!total) {
-      mensaje.classList.add('error'); mensaje.textContent = 'No hay valores válidos para la variable A en los registros.';
-      $('prob-resultados').hidden = true; return;
-    }
     var nA = datosA.filter(Boolean).length;
     var nB = 0, nInter = 0;
     if (claveB) {
       muestra.forEach(function (r, i) {
         var cumpleB = valorVariableRegistro(r, claveB) === categoriaB;
-        if (cumpleB) { nB++; if (datosA[i]) nInter++; }
+        if (cumpleB) { nB++; if (datosA[i]) { nInter++; } }
       });
     }
     var tbody = $('prob-cuerpo-resultados'); tbody.textContent = '';
-    var nombreA = esCuant
-      ? VARIABLE_ANALISIS[claveA].nombre + ' ' + ($('prob-a-operador').value === 'gt' ? '>' : '≤') + ' ' + numeroCO(umbral)
-      : VARIABLE_ANALISIS[claveA].nombre + ' = «' + categoriaA + '»';
+    var nombreA = VARIABLE_ANALISIS[claveA].nombre + ' = «' + categoriaA + '»';
     filaResultadoProb(tbody, 'P(A)', 'Casos de A ÷ total = ' + nA + ' ÷ ' + total, porcentajeProb(nA, total));
     if (claveB) {
       filaResultadoProb(tbody, 'P(B)', 'Casos de B ÷ total = ' + nB + ' ÷ ' + total, porcentajeProb(nB, total));
@@ -2889,7 +2983,7 @@
         nB ? porcentajeProb(nInter, nB) : 'No definida (P(B) = 0)');
       var pa = nA / total, pab = nB ? nInter / nB : null, diferencia = pab === null ? null : (pab - pa) * 100;
       var interpretacion = !nB
-        ? 'El evento B no ocurrió en los registros; por tanto, P(A | B) no está definida y no es posible comparar la probabilidad.'
+        ? 'El evento B no ocurrió en los registros; por tanto, P(A | B) no está definida.'
         : Math.abs(diferencia) < 1
           ? 'Al presentarse B, la probabilidad de A casi no cambia: pasa de ' + porcentajeProb(nA, total) + ' a ' + porcentajeProb(nInter, nB) + '.'
           : diferencia > 0
@@ -2900,12 +2994,10 @@
       filaResultadoProb(tbody, 'P(B)', 'No se seleccionó evento B', '—');
       filaResultadoProb(tbody, 'P(A ∩ B)', 'No se seleccionó evento B', '—');
       filaResultadoProb(tbody, 'P(A | B)', 'No se seleccionó evento B', '—');
-      $('prob-interpretacion').textContent = 'Se calculó P(A) para ' + nombreA + '. Seleccione un evento B si desea comparar la probabilidad condicionada P(A | B) con P(A).';
+      $('prob-interpretacion').textContent = 'Se calculó P(A) para ' + nombreA + '. Seleccione un evento B si desea comparar la probabilidad condicionada.';
     }
     $('prob-resultados').hidden = false;
-    mensaje.textContent = 'Cálculo realizado con ' + total + ' registros' +
-      (esCuant && total < registros.length ? ' con tiempo de verificación numérico (' + (registros.length - total) + ' sin dato fueron excluidos).' : '.') +
-      ' A: ' + nombreA +
+    mensaje.textContent = 'Cálculo realizado con ' + total + ' registros. A: ' + nombreA +
       (claveB ? ' · B: ' + NOMBRES_CUALITATIVAS[claveB] + ' = «' + categoriaB + '».' : ' · Sin evento B.');
   }
 
@@ -2921,7 +3013,8 @@
     var conteo = {}, totCol = {};
     cols.forEach(function (c) { totCol[c] = 0; });
     filas.forEach(function (f) {
-      conteo[f] = {}; cols.forEach(function (c) { conteo[f][c] = 0; });
+      conteo[f] = {};
+      cols.forEach(function (c) { conteo[f][c] = 0; });
     });
     registros.forEach(function (r) {
       var f = valorVariableRegistro(r, filaClave), c = valorVariableRegistro(r, colClave);
@@ -2933,7 +3026,8 @@
     th0.textContent = NOMBRES_CUALITATIVAS[filaClave] + ' / ' + NOMBRES_CUALITATIVAS[colClave];
     trh.appendChild(th0);
     cols.forEach(function (c) { var th = document.createElement('th'); th.textContent = c; trh.appendChild(th); });
-    var thT = document.createElement('th'); thT.textContent = 'Total fila'; trh.appendChild(thT); head.appendChild(trh);
+    var thT = document.createElement('th'); thT.textContent = 'Total fila'; trh.appendChild(thT);
+    head.appendChild(trh);
     var granTotal = 0;
     filas.forEach(function (f) {
       var tr = document.createElement('tr'), th = document.createElement('th'); th.textContent = f; tr.appendChild(th);
@@ -2943,15 +3037,19 @@
         var td = document.createElement('td'); td.textContent = numeroCO(n, 0); tr.appendChild(td);
       });
       var tdTotal = document.createElement('td'); tdTotal.textContent = numeroCO(suma, 0); tdTotal.className = 'prob-total'; tr.appendChild(tdTotal);
-      body.appendChild(tr); granTotal += suma;
+      body.appendChild(tr);
+      granTotal += suma;
     });
     var trTotal = document.createElement('tr'), thTotal = document.createElement('th');
     thTotal.textContent = 'Total columna'; thTotal.className = 'prob-total'; trTotal.appendChild(thTotal);
-    cols.forEach(function (c) { var td = document.createElement('td'); td.textContent = numeroCO(totCol[c], 0); td.className = 'prob-total'; trTotal.appendChild(td); });
+    cols.forEach(function (c) {
+      var td = document.createElement('td'); td.textContent = numeroCO(totCol[c], 0); td.className = 'prob-total'; trTotal.appendChild(td);
+    });
     var tdGran = document.createElement('td'); tdGran.textContent = numeroCO(granTotal, 0); tdGran.className = 'prob-total'; trTotal.appendChild(tdGran);
     body.appendChild(trTotal);
     $('prob-tabla-mensaje').textContent = 'Total de observaciones contabilizadas: ' + granTotal + ' de ' + registros.length +
       '. Los registros sin dato en alguna de las dos variables no se incluyen en la tabla.';
+    refrescarDesplegables();
   }
 
   /* ================== Tabla ================== */
@@ -3065,10 +3163,12 @@
       generarContingencia();
     }
     actualizarBotones();
+    refrescarDesplegables();
   }
 
-  function aplicarDatos(lista) {
+  function aplicarDatos(lista, esDemoServidor) {
     var nuevos = 0;
+    esConjuntoDemostrativo = !!esDemoServidor || lista.some(function (r) { return String(r.id || '').indexOf('DEMO-') === 0; });
     if (inicializado) {
       lista.forEach(function (r) {
         if (!idsConocidos[r.id]) { nuevos++; flashIds[r.id] = true; }
@@ -3102,7 +3202,7 @@
           setSync(ultimaSync ? 'ok' : 'actualizando');
           return;
         }
-        var nuevos = aplicarDatos(resp.registros);
+        var nuevos = aplicarDatos(resp.registros, resp.esDemostracion);
         if (resp.urlHoja) {
           enlaceHoja.href = resp.urlHoja;
           enlaceHoja.hidden = false;
@@ -3170,6 +3270,8 @@
     llenarSelect(campos.medio, 'medio');
     llenarSelect(campos.carne, 'carne');
     construirGraficos();
+    crearTodosLosDesplegables();
+
     $('analisis-variable').addEventListener('change', renderAnalisis);
     $('analisis-filtro-variable').addEventListener('change', function () {
       $('analisis-filtro-valor').value = '';
